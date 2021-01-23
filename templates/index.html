@@ -1,0 +1,36 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donald-2021</title>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename= 'apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename= 'favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename= 'favicon-16x16.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename= 'site.webmanifest') }}">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-D45G99QPRY"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-D45G99QPRY');
+  </script>
+  <!-- PLEASE NO CHANGES BELOW THIS LINE (UNTIL I SAY SO) -->
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename= 'libraries/p5.min.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename= 'libraries/p5.sound.min.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename= 'animations-' + set + '.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename= 'game.js') }}"></script>
+  <script language="javascript" type="text/javascript" src="{{ url_for('static', filename= 'donald_2021.js') }}"></script>
+  <!-- OK, YOU CAN MAKE CHANGES BELOW THIS LINE AGAIN -->
+  <script>
+    var testID = '{{ testID }}';
+  </script>
+  <!-- This line removes any default padding and style.
+       You might only need one of these values set. -->
+  <style> body { padding: 0; margin: 0; } </style>
+</head>
+
+<body>
+</body>
+</html>
