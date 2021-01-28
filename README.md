@@ -8,7 +8,12 @@ The learning goal is to experience using hardware to gather quantitative user da
 
 Donald used to be a hardware device implemented as an Arduino, an AUAS electronic board, and a Raspberry Pi based device using 4 touch controls and a 12 color LED ring for visual feedback and display.
 
-In course year 2021 this was changed to a web application due to the corona pandemic.
+![Donald in Hardware](docs/donald_hw_2.jpg)
+
+In course year 2021 this was changed to a web application due to the corona pandemic. Using a mobile phone to simulate hardware allows easier at home prototyping for students.
+
+![Donald in software](docs/handheld-donald_2.jpg)
+
 
 ## state machine
 
