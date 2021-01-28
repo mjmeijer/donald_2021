@@ -1,5 +1,7 @@
 # DONALD 2021
 
+&copy; 2021 Maarten Meijer / AUAS
+
 # Introduction
 
 Donald-2021 is named after [Donald Norman](https://en.wikipedia.org/wiki/Don_Norman), one of the fathers of Interaction Design and is a [short-term memory tester](https://en.wikipedia.org/wiki/Short-term_memory) to be used in various applications.
