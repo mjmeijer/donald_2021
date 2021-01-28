@@ -6,4 +6,5 @@ running_deplyment.md
 .DS_Store
 .git
 .gitignore
+docs
 __pycache__

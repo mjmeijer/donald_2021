@@ -1,0 +1,16 @@
+digraph g {
+  layout=circo
+  node [shape=circle width=1]
+  0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 0
+  4 -> 6 -> 0
+  4 -> 7 -> 0
+
+  0 [label = "F0 Idle"]
+  1 [label = "F1 Prepare"]
+  2 [label = "F2 ShowTest"]
+  3 [label = "F3 Decay"]
+  4 [label = "F4 Response"]
+  5 [label = "F5 Timeout" fill=orange]
+  6 [label = "F6 Success"  fill=green]
+  7 [label = "F7 Failure" fill=red]
+}
