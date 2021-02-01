@@ -2,7 +2,7 @@ README.md
 verify_auth.py
 main_test.py
 requirements-test.txt
-running_deplyment.md
+running_deployment.md
 .DS_Store
 .git
 .gitignore

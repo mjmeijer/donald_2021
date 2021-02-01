@@ -116,8 +116,8 @@ function showButtons() {
 function postResults(req, rec, status, time) {
   gtag('event', 'result', {
     'event_category': status,
-    'event_label': '' + currentLevel,
-    'value': time
+    'event_label': testID,
+    'value': currentLevel
   });
   data = testID + '\t'
     + testCounter + '\t'
