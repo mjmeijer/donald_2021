@@ -127,20 +127,32 @@ T-00ZI	19	PARAMS-0	10	60	20	60	240	3,2,3,2	3,2,3,3	wrong	120	1	412x766	2021-01-2
 
 This sequence is composed of:
  - testID
- -  testCounter
+ - testCounter
  - test PARAMS set
- - T0_IDLE
- - T1_WARN
- - T2_SHOWTEST
- - T3_DECAY
- - T4_COUNTDOWN
+ - `T0_IDLE`
+ - `T1_WARN`
+ - `T2_SHOWTEST`
+ - `T3_DECAY`
+ - `T4_COUNTDOWN`
  - requested sequence
  - recorded sequence
  - status _correct | wrong | timeout_
  - elapsed time in _frames_ at 60 fps
  - remaining levels at which error or timeout occurred, the current level is the length of the requested sequence
- - windowHeight x windowWidth
+ - windowHeight x windowWidth in pixels
  - date+time stamp
+
+## Microsoft Excel (Dutch) tips
+
+### Achieved and Requested Level
+Extracting the requested and recorded levels can be done from requested and recorded sequence
+ - `=AFRONDEN.BOVEN(LENGTE($I1)/2;1)`
+ - `=AFRONDEN.BOVEN(LENGTE($J1)/2;1)`
+
+### Date + Time stamp into values
+Extracting the date and time form the date+time stamp field can be done
+  - `=DATUMWAARDE(LINKS($O1;10))` and set the cell display to `jjjj-mm-dd`
+  - `=TIJDWAARDE(DEEL(O1;12;8))` and set the cell display to `uu:mm:ss`
 
 ## Tools
 
