@@ -54,15 +54,16 @@ The animation steps are as follows:
 
 The _User Interaction_ can be optimized by editing the timing parameters in a copy of the `animations-x.js` files.
 
-| Timing Param | PARAMS-0 | PARAMS-1 | PARAMS-2 | PARAMS-3 | PARAMS-4 |
-| :----------- | :------- | :------- | :------- | :------- | :------- |
-| T0_IDLE      | 10       | 20       | 20       | 30       | 30       |
-| T1_WARN      | 60       | 60       | 120      | 120      | 180      |
-| T3_SHOW      | 20       | 40       | 40       | 30       | 30       |
-| T4_DECAY     | 60       | 120      | 120      | 90       | 180      |
-| T4_COUNTDOWN | 240      | 300      | 360      | 420      | 420      |
+| Timing Param  | PARAMS-0 | PARAMS-1 | PARAMS-2 | PARAMS-3 | PARAMS-4 |
+| :------------ | :------: | :------: | :------: | :------: | :------: |
+| `T0_IDLE`     | 10       | 20       | 20       | 30       | 30       |
+| `T1_WARN`     | 60       | 60       | 120      | 120      | 180      |
+| `T3_SHOW`     | 20       | 40       | 40       | 30       | 30       |
+| `T4_DECAY`    | 60       | 120      | 120      | 90       | 180      |
+| `T4_COUNTDOWN`| 240      | 300      | 360      | 420      | 420      |
 
 Timing is in 'frames' where we assume a frame rate of **60 fps**.
+So a `T4_COUNTDOWN` of 240 means 240 / 60 = 4 seconds.
 
 ## User Experience - Animations
 
@@ -70,7 +71,7 @@ The _User Experience_ can be improved by changing the animation functions in a c
 
 An animation function is called every couple of frames and looks like this:
 
-```
+```js
 //
 //  F3 decay is where your short senory and term memory slowly fades away
 //
