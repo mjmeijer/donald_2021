@@ -16,6 +16,8 @@ In course year 2021 this was changed to a web application due to the corona pand
 
 ![Donald in software](docs/handheld-donald_2.jpg)
 
+If you just want to look at the interface part without server setup please see project [donald_2021_local](https://github.com/mjmeijer/donald_2021_local).
+
 
 ## state machine
 
@@ -139,7 +141,7 @@ This sequence is composed of:
  - status _correct | wrong | timeout_
  - elapsed time in _frames_ at 60 fps
  - remaining levels at which error or timeout occurred, the current level is the length of the requested sequence
- - windowHeight x windowWidth in pixels
+ - windowHeight x windowWidth in pixels (see whether it's a phone)
  - date+time stamp
 
 ## Microsoft Excel (Dutch) tips
@@ -152,7 +154,7 @@ Extracting the requested and recorded levels can be done from requested and reco
 ### Date + Time stamp into values
 Extracting the date and time form the date+time stamp field can be done
   - `=DATUMWAARDE(LINKS($O1;10))` and set the cell display to `jjjj-mm-dd`
-  - `=TIJDWAARDE(DEEL(O1;12;8))` and set the cell display to `uu:mm:ss`
+  - `=TIJDWAARDE(DEEL($O1;12;8))` and set the cell display to `uu:mm:ss`
 
 ## Tools
 
