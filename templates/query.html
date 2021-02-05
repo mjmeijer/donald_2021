@@ -29,8 +29,8 @@
     $('#query').submit(function() {
         t = $("#ID").val().toUpperCase();
         $("#ID").val(t);
-        gtag('event', 'result', {
-          'event_category': 'download',
+        gtag('event', 'file_download', {
+          'event_category': 'file_download',
           'event_label': t
         });
   });
