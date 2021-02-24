@@ -60,8 +60,8 @@ The _User Interaction_ can be optimized by editing the timing parameters in a co
 | :------------ | :------: | :------: | :------: | :------: | :------: |
 | `T0_IDLE`     | 10       | 20       | 20       | 30       | 30       |
 | `T1_WARN`     | 60       | 60       | 120      | 120      | 180      |
-| `T3_SHOW`     | 20       | 40       | 40       | 30       | 30       |
-| `T4_DECAY`    | 60       | 120      | 120      | 90       | 180      |
+| `T2_SHOWTEST` | 20       | 40       | 40       | 30       | 30       |
+| `T3_DECAY`    | 60       | 120      | 120      | 90       | 180      |
 | `T4_COUNTDOWN`| 240      | 300      | 360      | 420      | 420      |
 
 Timing is in 'frames' where we assume a frame rate of **60 fps**.
