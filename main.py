@@ -88,7 +88,8 @@ def index():
     else:
         id = next_ID()
         testID = alnum4(id)
-        return render_template('index.html', testID=testID, set=str(id%5))
+        set = request.args.get('set', default =str(id%5), type = str )
+        return render_template('index.html', testID=testID, set=set)
 
 @app.route('/query', methods=['GET','POST'])
 def query():
