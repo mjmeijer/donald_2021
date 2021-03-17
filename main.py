@@ -93,7 +93,8 @@ def index():
 
 @app.route('/query', methods=['GET','POST'])
 def query():
-        count = len(count_results())
+#        count = len(count_results())
+        count = "heul veel"
         return render_template('query.html', count=count)
 
 @app.route('/q', methods=['GET','POST'])
@@ -105,7 +106,6 @@ def retrieve():
     else:
         testID = request.args.get('ID')
         testSet = request.args.get('set')
-    count_results()
     def generate():
         query = client.query(kind="testRecord")
         if testID:
