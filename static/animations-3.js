@@ -60,7 +60,7 @@ var prepColors = new Array(
   'black' // named color
   );
 
-function showPrepare(index) {
+function showPrepare() {
   if (frameCount % (T1_WARN / 12) == 0) {
     showButtons();
     showLeds(prepColors);
