@@ -83,7 +83,7 @@ function ledring(x, y, colors) {
     rotate (radians(-30));
     rectMode(CENTER);
     rect(0, -100, 40, 40);
-    fill('white');
+    fill('grey');
     textSize(12);
     textAlign(CENTER, CENTER);
     text(i, 0, -130, 20, 20);
