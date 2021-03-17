@@ -34,14 +34,14 @@
           'event_label': t
         });
       });
-    $('#query2').submit(function() {
-        t = $("#GRP").val().toUpperCase();
-        $("#GRP").val(t);
-        gtag('event', 'file_download', {
-          'event_category': 'file_download',
-          'event_label': t
-        });
-      });
+//    $('#query2').submit(function() {
+//        t = $("#GRP").val().toUpperCase();
+//        $("#GRP").val(t);
+//        gtag('event', 'file_download', {
+//          'event_category': 'file_download',
+//          'event_label': t
+//        });
+//      });
   });
   </script>
 
@@ -55,7 +55,7 @@
   <h1>Hoi, Ik heb al {{ count }} resultaten ontvangen!!</h1>
   <form id="query" class="toupper" method="post" action="/q" enctype="multipart/form-data">
     <dl>
-  <h2>Donald1</h2>
+  <h2>Donald1/2</h2>
     <p>Vul je test reference in ('T-xxxx'), dan kan je de resultaten downloaden</p>
 		<p>
       <label class="col-2">testID</label>
@@ -66,7 +66,7 @@
 		  <input id="submit" class="btn btn-primary btn-lg" type="submit" value="Stuur ze maar">
 	  </p>
 </form>
-<form id="query2" class="toupper" method="post" action="/q" enctype="multipart/form-data">
+<!-- <form id="query2" class="toupper" method="post" action="/q" enctype="multipart/form-data">
   <dl>
     <h2>Donald2</h2>
     <p>Vul je groep reference in ('GRP-xx'), dan kan je de resultaten downloaden</p>
@@ -79,6 +79,7 @@
 		  <input id="submit" class="btn btn-primary btn-lg" type="submit" value="Stuur ze maar">
 	  </p>
 </form>
+-->
 <div>&copy; 2021 Maarten Meijer, AUAS / Hogeschool van Amsterdam. Uitsluitend voor gebruik in het vak 'Gebruikersdata 2020-2021'</div>
 </div>
 </body>
