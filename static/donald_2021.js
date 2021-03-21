@@ -110,7 +110,11 @@ function buttons(x, y, w, h) {
 }
 
 function showButtons() {
-  buttons(0, 0, windowWidth, windowHeight);
+  if(typeof custom_buttons === "function"){
+    custom_buttons(0, 0, windowWidth, windowHeight);
+  } else {
+    buttons(0, 0, windowWidth, windowHeight);
+  }
 }
 
 function postResults(req, rec, status, time) {
