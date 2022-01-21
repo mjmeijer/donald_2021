@@ -30,7 +30,7 @@ def alnum4(number):
     r = chars[int((number / m) % m)] + r
     r = chars[int((number / (m * m)) % m)] + r
     r = chars[int((number / (m * m * m)) % m)] + r
-    return 'T-' + r
+    return 'F-' + r
 
 #
 # we need to maintain the index for which of the unique test ID's we're at
@@ -64,7 +64,6 @@ def save_result(data):
     testResult.update({'testID':testID,'testIndex': testIndex, 'testSet':testSet,
         'timeStamp':timeStamp, 'value': text})
     client.put(testResult)
-
 #
 #
 #
@@ -73,6 +72,23 @@ def count_results():
     tests = list(query.fetch())
     return tests
 
+#
+#
+#
+def delete_old_testRecords():
+    kind = 'testRecord'
+    fetch_limit = 200
+    current_year = datetime.datetime(2022, 1, 1)
+
+#    entities = True
+#    while entities:
+    query = client.query(kind=kind)
+    query.add_filter('timeStamp','<=', current_year)
+    entities = list(query.fetch(limit=fetch_limit))
+    for entity in entities:
+        print('Deleting: {}'.format(entity))
+        client.delete(entity.key)
+
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
 # called `app` in `main.py`.
 app = Flask(__name__)
@@ -80,10 +96,10 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET','POST'])
 def index():
+    delete_old_testRecords()
     if request.method == 'POST':
         data = request.get_data()
         save_result(data)
-        count_results()
         return ''
     else:
         id = next_ID()
@@ -93,12 +109,14 @@ def index():
 
 @app.route('/query', methods=['GET','POST'])
 def query():
+    delete_old_testRecords()
 #        count = len(count_results())
-        count = "heul veel"
-        return render_template('query.html', count=count)
+    count = "heul veel"
+    return render_template('query.html', count=count)
 
 @app.route('/q', methods=['GET','POST'])
 def retrieve():
+    delete_old_testRecords()
     filename = "allResults"
     if request.method == 'POST':
         testID = request.form.get('ID')
@@ -120,8 +138,10 @@ def retrieve():
         for testResult in tests:
             yield(testResult['value'])
             yield('\n')
-    return Response(stream_with_context(generate()), mimetype="text/plain", headers={"Content-Disposition":"attachment;filename=" + filename + ".txt"})
+#    return Response(stream_with_context(generate()), mimetype="text/plain", headers={"Content-Disposition":"attachment;filename=" + filename + ".txt"})
+    return Response("The application has been stopped on 2021 04 08", mimetype="text/plain", headers={"Content-Disposition":"attachment;filename=" + filename + ".txt"})
 #    return ''
+
 
 
 if __name__ == '__main__':
