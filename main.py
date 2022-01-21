@@ -73,12 +73,12 @@ def count_results():
     return tests
 
 #
-#
+# delete 200 old records on every request rceived. Change later to autodelete older than 100 days.
 #
 def delete_old_testRecords():
     kind = 'testRecord'
     fetch_limit = 200
-    current_year = datetime.datetime(2022, 1, 1)
+    current_year = datetime(2022, 1, 1)
 
 #    entities = True
 #    while entities:
@@ -86,7 +86,7 @@ def delete_old_testRecords():
     query.add_filter('timeStamp','<=', current_year)
     entities = list(query.fetch(limit=fetch_limit))
     for entity in entities:
-        print('Deleting: {}'.format(entity))
+#        print('Deleting: {}'.format(entity))
         client.delete(entity.key)
 
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app

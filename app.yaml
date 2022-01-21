@@ -1,4 +1,4 @@
-runtime: python37
+runtime: python39
 
 env_variables:
   BUCKET_NAME: "donald-2021.appspot.com"
