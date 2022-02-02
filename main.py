@@ -128,18 +128,18 @@ def retrieve():
         query = client.query(kind="testRecord")
         if testID:
             print(testID)
-            query.add_filter('testID','=', testID)
+            query.add_filter('testID', '=', testID)
             filename = testID
         if testSet:
-            query.add_filter('testSet','=', testSet)
+            query.add_filter('testSet', '=', testSet)
             filename = 'testset-' + testSet
         query.order = ["testIndex"]
         tests = list(query.fetch())
         for testResult in tests:
             yield(testResult['value'])
             yield('\n')
-#    return Response(stream_with_context(generate()), mimetype="text/plain", headers={"Content-Disposition":"attachment;filename=" + filename + ".txt"})
-    return Response("The application has been stopped on 2021 04 08", mimetype="text/plain", headers={"Content-Disposition":"attachment;filename=" + filename + ".txt"})
+    return Response(stream_with_context(generate()), mimetype="text/plain", headers={"Content-Disposition":"attachment;filename=" + filename + ".txt"})
+#    return Response("The application has been stopped on 2021 04 08", mimetype="text/plain", headers={"Content-Disposition":"attachment;filename=" + filename + ".txt"})
 #    return ''
 
 
