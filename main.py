@@ -23,6 +23,7 @@ from datetime import datetime
 #
 chars = '0123456789ABCDEFGHIJKLMNPQRSTVWXYZ'
 
+
 def alnum4(number):
     m = len(chars)
     r = ''
@@ -32,24 +33,28 @@ def alnum4(number):
     r = chars[int((number / (m * m * m)) % m)] + r
     return 'F-' + r
 
+
 #
 # we need to maintain the index for which of the unique test ID's we're at
 #
 client = datastore.Client()
-key = client.key('counter','test-ID')
+key = client.key('counter', 'test-ID')
+
 
 def next_ID():
     with client.transaction():
         counter = client.get(key)
         if not counter:
             counter = datastore.Entity(key)
-            counter.update({'value':100})
+            counter.update({'value': 100})
         counter['value'] = counter['value'] + 1
         client.put(counter)
     return counter['value']
 #
 # received data needs to be stored for reference
 #
+
+
 def save_result(data):
     text = data.decode("utf-8")
     parts = text.split('\t')
@@ -60,13 +65,15 @@ def save_result(data):
     text += timeStamp.strftime('\t%Y-%m-%d %H:%M:%S.%f')
 
     testKey = client.key('testRecord')
-    testResult = datastore.Entity(key = testKey)
-    testResult.update({'testID':testID,'testIndex': testIndex, 'testSet':testSet,
-        'timeStamp':timeStamp, 'value': text})
+    testResult = datastore.Entity(key=testKey)
+    testResult.update({'testID': testID, 'testIndex': testIndex, 'testSet': testSet,
+                       'timeStamp': timeStamp, 'value': text})
     client.put(testResult)
 #
 #
 #
+
+
 def count_results():
     query = client.query(kind='testRecord')
     tests = list(query.fetch())
@@ -75,6 +82,8 @@ def count_results():
 #
 # delete 200 old records on every request rceived. Change later to autodelete older than 100 days.
 #
+
+
 def delete_old_testRecords():
     kind = 'testRecord'
     fetch_limit = 200
@@ -83,18 +92,19 @@ def delete_old_testRecords():
 #    entities = True
 #    while entities:
     query = client.query(kind=kind)
-    query.add_filter('timeStamp','<=', current_year)
+    query.add_filter('timeStamp', '<=', current_year)
     entities = list(query.fetch(limit=fetch_limit))
     for entity in entities:
-#        print('Deleting: {}'.format(entity))
+        #        print('Deleting: {}'.format(entity))
         client.delete(entity.key)
+
 
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
 # called `app` in `main.py`.
 app = Flask(__name__)
 
 
-@app.route('/', methods=['GET','POST'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     delete_old_testRecords()
     if request.method == 'POST':
@@ -104,17 +114,19 @@ def index():
     else:
         id = next_ID()
         testID = alnum4(id)
-        set = request.args.get('set', default =str(id%5), type = str )
+        set = request.args.get('set', default=str(id % 5), type=str)
         return render_template('index.html', testID=testID, set=set)
 
-@app.route('/query', methods=['GET','POST'])
+
+@app.route('/query', methods=['GET', 'POST'])
 def query():
     delete_old_testRecords()
 #        count = len(count_results())
     count = "heul veel"
     return render_template('query.html', count=count)
 
-@app.route('/q', methods=['GET','POST'])
+
+@app.route('/q', methods=['GET', 'POST'])
 def retrieve():
     delete_old_testRecords()
     filename = "allResults"
@@ -124,12 +136,15 @@ def retrieve():
     else:
         testID = request.args.get('ID')
         testSet = request.args.get('set')
+
     def generate():
         query = client.query(kind="testRecord")
+        query.add_filter('testID', '<=', 'T-0000'')
         if testID:
             print(testID)
             query.add_filter('testID', '=', testID)
             filename = testID
+        query.add_filter('testID', '<=', 'T-0000'')
         if testSet:
             query.add_filter('testSet', '=', testSet)
             filename = 'testset-' + testSet
@@ -138,10 +153,9 @@ def retrieve():
         for testResult in tests:
             yield(testResult['value'])
             yield('\n')
-    return Response(stream_with_context(generate()), mimetype="text/plain", headers={"Content-Disposition":"attachment;filename=" + filename + ".txt"})
+    return Response(stream_with_context(generate()), mimetype="text/plain", headers={"Content-Disposition": "attachment;filename=" + filename + ".txt"})
 #    return Response("The application has been stopped on 2021 04 08", mimetype="text/plain", headers={"Content-Disposition":"attachment;filename=" + filename + ".txt"})
 #    return ''
-
 
 
 if __name__ == '__main__':
