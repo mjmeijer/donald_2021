@@ -139,16 +139,15 @@ def retrieve():
 
     def generate():
         query = client.query(kind="testRecord")
-        query.add_filter('testID', '<=', 'T-0000'')
+        query.add_filter('testID', '<=', 'T-0000')
         if testID:
             print(testID)
             query.add_filter('testID', '=', testID)
             filename = testID
-        query.add_filter('testID', '<=', 'T-0000'')
         if testSet:
             query.add_filter('testSet', '=', testSet)
             filename = 'testset-' + testSet
-        query.order = ["testIndex"]
+        query.order = ["testID", "testIndex"]
         tests = list(query.fetch())
         for testResult in tests:
             yield(testResult['value'])
