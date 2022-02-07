@@ -93,6 +93,7 @@ def delete_old_testRecords():
 #    while entities:
     query = client.query(kind=kind)
     query.add_filter('timeStamp', '<=', current_year)
+    query.add_filter('testID', '>', 'T-0000')
     entities = list(query.fetch(limit=fetch_limit))
     for entity in entities:
         #        print('Deleting: {}'.format(entity))
