@@ -107,7 +107,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    delete_old_testRecords()
+#    delete_old_testRecords()
     if request.method == 'POST':
         data = request.get_data()
         save_result(data)
@@ -121,7 +121,7 @@ def index():
 
 @app.route('/query', methods=['GET', 'POST'])
 def query():
-    delete_old_testRecords()
+#    delete_old_testRecords()
 #        count = len(count_results())
     count = "heul veel"
     return render_template('query.html', count=count)
@@ -129,7 +129,7 @@ def query():
 
 @app.route('/q', methods=['GET', 'POST'])
 def retrieve():
-    delete_old_testRecords()
+#    delete_old_testRecords()
     filename = "allResults"
     if request.method == 'POST':
         testID = request.form.get('ID')
