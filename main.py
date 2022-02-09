@@ -107,7 +107,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-#    delete_old_testRecords()
+    #    delete_old_testRecords()
     if request.method == 'POST':
         data = request.get_data()
         save_result(data)
@@ -121,16 +121,19 @@ def index():
 
 @app.route('/query', methods=['GET', 'POST'])
 def query():
-#    delete_old_testRecords()
-#        count = len(count_results())
+    #    delete_old_testRecords()
+    #        count = len(count_results())
     count = "heul veel"
     return render_template('query.html', count=count)
 
 
+filename = 'testID-'
+
+
 @app.route('/q', methods=['GET', 'POST'])
 def retrieve():
-#    delete_old_testRecords()
-    filename = "allResults"
+    #    delete_old_testRecords()
+
     if request.method == 'POST':
         testID = request.form.get('ID')
         testSet = request.form.get('set')
@@ -139,16 +142,20 @@ def retrieve():
         testSet = request.args.get('set')
 
     def generate():
+        global filename
         query = client.query(kind="testRecord")
-        query.add_filter('testID', '<=', 'T-0000')
         if testID:
             print(testID)
             query.add_filter('testID', '=', testID)
-            filename = testID
+            filename = 'testID-' + testID
+            query.order = ["testIndex"]
+        else:
+            filename = "allResults"
+            query.add_filter('testID', '<=', 'T-0000')
+            query.order = ["testID", "testIndex"]
         if testSet:
             query.add_filter('testSet', '=', testSet)
             filename = 'testset-' + testSet
-        query.order = ["testID", "testIndex"]
         tests = list(query.fetch())
         for testResult in tests:
             yield(testResult['value'])
