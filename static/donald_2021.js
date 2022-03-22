@@ -152,12 +152,14 @@ function postResults(req, rec, status, time) {
 var activityState = 0;
 var testLevel = 0;
 var lastButton = -1;
+var lastLevel = -1;
 var currentLevel = -1;
 var startFrame;
 var test;
 var game, reply;
 function changeState(newState) {
   startFrame = frameCount;
+  lastLevel = currentLevel;
   currentLevel = testLevel;
   lastButton = -1;
   activityState = newState;
