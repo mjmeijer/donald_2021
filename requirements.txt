@@ -1,5 +1,7 @@
 Flask==1.1.2
 # see https://stackoverflow.com/questions/71189819/python-docker-importerror-cannot-import-name-json-from-itsdangerous
 itsdangerous==2.0.1
+jinja2==3.0.3
+werkzeug==2.0.3
 GoogleAppEngineCloudStorageClient==1.9.22.1
 google-cloud-datastore==2.4.0
