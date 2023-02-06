@@ -1,5 +1,5 @@
 //
-// donald-2021 (c) copyright 2021-2022 Maarten Meijer / AUAS
+// donald-2021 (c) copyright 2021-2023 Maarten Meijer / AUAS
 //
 Array.prototype.rotateRight = function( n ) {
   this.unshift.apply( this, this.splice( n, this.length ) );

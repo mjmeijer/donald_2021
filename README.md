@@ -1,6 +1,6 @@
 # DONALD 2021
 
-&copy; 2021 Maarten Meijer / AUAS
+&copy; 2021-2023 Maarten Meijer / AUAS
 
 # Introduction
 

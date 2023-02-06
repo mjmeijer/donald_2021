@@ -1,5 +1,5 @@
 //
-// game.js (c) copyright 2021-2022 Maarten Meijer / AUAS
+// game.js (c) copyright 2021-2023 Maarten Meijer / AUAS
 //
 //  a game is representen by an array of values
 //
