@@ -31,7 +31,7 @@ def alnum4(number):
     r = chars[int((number / m) % m)] + r
     r = chars[int((number / (m * m)) % m)] + r
     r = chars[int((number / (m * m * m)) % m)] + r
-    return 'F-' + r
+    return 'A-' + r
 
 
 #
@@ -87,13 +87,13 @@ def count_results():
 def delete_old_testRecords():
     kind = 'testRecord'
     fetch_limit = 200
-    current_year = datetime(2022, 1, 1)
+    current_year = datetime(2023, 1, 1)
 
 #    entities = True
 #    while entities:
     query = client.query(kind=kind)
-    query.add_filter('timeStamp', '<=', current_year)
-    query.add_filter('testID', '>', 'T-0000')
+#    query.add_filter('timeStamp', '<=', current_year)
+    query.add_filter('testID', '>=', 'F-0000')
     entities = list(query.fetch(limit=fetch_limit))
     for entity in entities:
         #        print('Deleting: {}'.format(entity))
@@ -107,7 +107,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    #    delete_old_testRecords()
+    delete_old_testRecords()
     if request.method == 'POST':
         data = request.get_data()
         save_result(data)
@@ -121,7 +121,7 @@ def index():
 
 @app.route('/query', methods=['GET', 'POST'])
 def query():
-    #    delete_old_testRecords()
+    delete_old_testRecords()
     #        count = len(count_results())
     count = "heul veel"
     return render_template('query.html', count=count)
@@ -132,7 +132,7 @@ filename = 'testID-'
 
 @app.route('/q', methods=['GET', 'POST'])
 def retrieve():
-    #    delete_old_testRecords()
+    delete_old_testRecords()
 
     if request.method == 'POST':
         testID = request.form.get('ID')
@@ -151,7 +151,7 @@ def retrieve():
             query.order = ["testIndex"]
         else:
             filename = "allResults"
-            query.add_filter('testID', '<=', 'T-0000')
+            query.add_filter('testID', '<=', 'F-0000')
             query.order = ["testID", "testIndex"]
         if testSet:
             query.add_filter('testSet', '=', testSet)
