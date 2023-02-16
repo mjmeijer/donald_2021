@@ -30,5 +30,5 @@ six==1.16.0
 typing-inspect==0.7.1
 typing_extensions==4.1.1
 urllib3==1.26.9
-Werkzeug==2.1.1
+Werkzeug==2.2.3
 zipp==3.8.0
