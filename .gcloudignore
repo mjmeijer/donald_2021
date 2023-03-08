@@ -1,7 +1,10 @@
 README.md
 verify_auth.py
 main_test.py
+requirements-2022.txt
+requirements-2023.txt
 requirements-test.txt
+POST-data.txt
 running_deployment.md
 .DS_Store
 .git
