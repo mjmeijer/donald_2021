@@ -86,6 +86,7 @@ def count_results():
 
 
 def delete_old_testRecords():
+    return
     kind = 'testRecord'
     fetch_limit = 200
     current_year = datetime(2023, 1, 1)
@@ -142,7 +143,10 @@ def retrieve():
         testID = request.args.get('ID')
         testSet = request.args.get('set')
 
-    filename = 'testID-' + testID + '.txt'
+    if testID:
+        filename = 'testID-' + testID + '.txt'
+    else:
+        filename = "allResults"
 
     def generate():
         global filename
@@ -151,7 +155,6 @@ def retrieve():
             query.add_filter('testID', '=', testID)
             query.order = ["testIndex"]
         else:
-            filename = "allResults"
             query.add_filter('testID', '<=', 'F-0000')
             query.order = ["testID", "testIndex"]
 #        if testSet:
