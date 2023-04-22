@@ -45,6 +45,18 @@ function distance(x1, y1, x2, y2) {
   return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 
+/* prevents the mobile browser from processing some default
+ * touch events, like swiping left for "back" or scrolling
+ * the page.
+ */
+function touchStarted(){
+  return false;
+}
+
+function touchMoved(){
+  return false;
+}
+
 
 function touchEnded() {
   ellipse(mouseX, mouseY, 50, 50);
@@ -62,6 +74,7 @@ function touchEnded() {
     b += 1;
   }
   lastButton = Array(0, 1, 3, 2)[b];
+  return false;
 }
 
 function ledring(x, y, colors) {
@@ -227,7 +240,7 @@ function handleCheckResponse() {
     break;
   default:
     reply.push(lastButton);
-//  print('expected : ' + game.getValue(testLevel - currentLevel) + ', received : ' + lastButton);
+    print('expected : ' + game.getValue(testLevel - currentLevel) + ', received : ' + lastButton);
     if (lastButton != game.getValue(testLevel - currentLevel)) {
       postResults(game.toString(), '' + reply, 'wrong', frameCount - startFrame);
       lastButton = -1;
@@ -284,7 +297,7 @@ function handleFailure() {
 
 // the short term memory tester program works from a gameloop or activity state machine
 function draw() {
-  //  print('current activityState : ' + activityState + ', test level : ' + testLevel + ', current level : ' + currentLevel);
+  // print('current activityState : ' + activityState + ', test level : ' + testLevel + ', current level : ' + currentLevel);
   switch(activityState) {
   case 0:
     handleIdle();
