@@ -240,7 +240,7 @@ function handleCheckResponse() {
     break;
   default:
     reply.push(lastButton);
-    print('expected : ' + game.getValue(testLevel - currentLevel) + ', received : ' + lastButton);
+//    print('expected : ' + game.getValue(testLevel - currentLevel) + ', received : ' + lastButton);
     if (lastButton != game.getValue(testLevel - currentLevel)) {
       postResults(game.toString(), '' + reply, 'wrong', frameCount - startFrame);
       lastButton = -1;
