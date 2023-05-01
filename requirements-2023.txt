@@ -1,4 +1,4 @@
-Flask==2.2.3
+Flask==2.3.2
 GoogleAppEngineCloudStorageClient==1.9.22.1
 google-cloud-datastore==2.14.0
 # freeze of dependencies
