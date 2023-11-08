@@ -32,7 +32,7 @@ def alnum4(number):
     r = chars[int((number / m) % m)] + r
     r = chars[int((number / (m * m)) % m)] + r
     r = chars[int((number / (m * m * m)) % m)] + r
-    return 'A-' + r
+    return 'S-' + r
 
 
 #
@@ -95,7 +95,7 @@ def delete_old_testRecords():
 #    while entities:
     query = client.query(kind=kind)
 #    query.add_filter('timeStamp', '<=', current_year)
-    query.add_filter('testID', '>=', 'F-0000')
+    query.add_filter('testID', '<=', 'F-0000')
     entities = list(query.fetch(limit=fetch_limit))
     for entity in entities:
         #        print('Deleting: {}'.format(entity))
@@ -155,7 +155,7 @@ def retrieve():
             query.add_filter('testID', '=', testID)
             query.order = ["testIndex"]
         else:
-            query.add_filter('testID', '<=', 'F-0000')
+            query.add_filter('testID', '>=', 'S-0000')
             query.order = ["testID", "testIndex"]
 #        if testSet:
 #            query.add_filter('testSet', '=', testSet)

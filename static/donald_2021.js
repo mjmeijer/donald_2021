@@ -21,16 +21,51 @@ var blackColors = new Array(
   'black' // named color
   );
 
-var testCounter;
+var testCounter, age, awake, drugs, start, questions;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  text("Leeftijd (jaren)", 10, 30)
+  age = createInput('', 'number');
+  age.position(10,35);
+  age.size(100);
+  age.attribute("pattern" , "[0-9]*")
+  age.style("text-align" , "right")
+
+  text("Uren wakker (uren)", 10, 80)
+  awake = createInput('', 'number');
+  awake.position(10,85);
+  awake.size(100);
+  awake.attribute("pattern" , "[0-9]*")
+  awake.style("text-align" , "right")
+
+  text("Middelen gebruik afgelopen 12 uur", 10, 130)
+  drugs = createSelect();
+  drugs.position(10,135);
+  drugs.option('zeg ik niet');
+  drugs.option('geen');
+  drugs.option('alcohol');
+  drugs.option('pillen');
+  drugs.option('alcohol+pillen');
+  drugs.option('anders');
+  drugs.selected('zeg ik niet')
+
+  start = createButton('Starten');
+  start.position(10, 180);
+  start.mousePressed(startLoop);
+  noLoop();
+}
+
+function startLoop() {
+  questions = '' + age.value() + '\t' + awake.value() + '\t' + drugs.value();
+  removeElements();
+  testCounter = 0;
   frameRate(60);
   background(10);
   stroke(0);
-  testCounter = 0;
-//  print("Hello Donad_2021");
+  loop();
 }
+
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
@@ -50,15 +85,17 @@ function distance(x1, y1, x2, y2) {
  * the page.
  */
 function touchStarted(){
-  return false;
+  if(isLooping()) return false;
 }
 
 function touchMoved(){
-  return false;
+  if(isLooping()) return false;
 }
 
 
 function touchEnded() {
+  if(isLooping()) {
+
   ellipse(mouseX, mouseY, 50, 50);
 
   if (distance(mouseX, mouseY, windowWidth/2, windowHeight/2) < 150) {
@@ -75,6 +112,7 @@ function touchEnded() {
   }
   lastButton = Array(0, 1, 3, 2)[b];
   return false;
+  }
 }
 
 function ledring(x, y, colors) {
@@ -152,7 +190,8 @@ function postResults(req, rec, status, time) {
     + status + '\t'
     + time  + '\t'
     + currentLevel + '\t'
-    + (''+windowWidth+'x'+windowHeight);
+    + ''+windowWidth+'x'+windowHeight + '\t'
+    + questions;
   httpPost('/', data);
 }
 
