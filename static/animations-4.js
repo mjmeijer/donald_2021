@@ -52,7 +52,7 @@ var prepColors = new Array(
   'black', // named color
   'black', // named color
   'black', // named color
-  'black', // named color
+  'pink', // named color
   'black', // named color
   'black', // named color
   'black', // named color
