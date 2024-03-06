@@ -86,16 +86,16 @@ def count_results():
 
 
 def delete_old_testRecords():
-    return
+    return # all are deleted already
     kind = 'testRecord'
     fetch_limit = 200
-    current_year = datetime(2023, 1, 1)
+    current_year = datetime(2024, 1, 1)
 
 #    entities = True
 #    while entities:
     query = client.query(kind=kind)
-#    query.add_filter('timeStamp', '<=', current_year)
-    query.add_filter('testID', '<=', 'F-0000')
+    query.add_filter('timeStamp', '<=', current_year)
+    query.add_filter('testID', '<=', 'S-0000')
     entities = list(query.fetch(limit=fetch_limit))
     for entity in entities:
         #        print('Deleting: {}'.format(entity))
