@@ -302,7 +302,12 @@ function handleTimeOut() {
   showTimeout();
   // TODO post the result as timeout
   if (frameCount - startFrame > T5_TIMEOUT) {
-    testLevel = 0;
+    if(typeof custom_timeout === "function"){
+      changeState(custom_timeout());
+    } else {
+      testLevel = 0;
+      changeState(0);
+    }
 //    print("Timeout!");
   }
 }
