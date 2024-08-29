@@ -47,17 +47,29 @@ function setup() {
   drugs.option('alcohol');
   drugs.option('pillen');
   drugs.option('alcohol+pillen');
+  drugs.option('energiedrank');
+  drugs.option('koffie');
+  drugs.option('van alles wat');
   drugs.option('anders');
   drugs.selected('zeg ik niet')
 
+  text("kleurenblind", 10, 180)
+  cb = createSelect();
+  cb.position(10,185);
+  cb.option('zeg ik niet');
+  cb.option('kleurenblind');
+  cb.option('niet kleurenblind');
+  drugs.selected('zeg ik niet')
+
+
   start = createButton('Starten');
-  start.position(10, 180);
+  start.position(10, 230);
   start.mousePressed(startLoop);
   noLoop();
 }
 
 function startLoop() {
-  questions = '' + age.value() + '\t' + awake.value() + '\t' + drugs.value();
+  questions = '' + age.value() + '\t' + awake.value() + '\t' + drugs.value() + '\t' + cb.value();
   removeElements();
   testCounter = 0;
   frameRate(60);
