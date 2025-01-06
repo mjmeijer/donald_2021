@@ -17,7 +17,7 @@ grpcio==1.62.1
 grpcio-status==1.62.1
 idna==3.7
 itsdangerous==2.1.2
-Jinja2==3.1.4
+Jinja2==3.1.5
 MarkupSafe==2.1.5
 packaging==24.0
 pip-tools==7.4.1
