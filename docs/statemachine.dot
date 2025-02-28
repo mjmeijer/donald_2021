@@ -1,16 +1,16 @@
 digraph g {
   layout=circo
-  node [shape=circle width=1]
+  node [shape=circle width=1 style=filled fillcolor=grey]
   0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 0
-  4 -> 6 -> 0
-  4 -> 7 -> 0
+  4 -> 6 -> 1
+  4 -> 7 -> 1
 
-  0 [label = "F0 Idle"]
+  0 [label = "F0 Idle" ]
   1 [label = "F1 Prepare"]
-  2 [label = "F2 ShowTest"]
+  2 [label = "F2 ShowTest" fillcolor=lightblue]
   3 [label = "F3 Decay"]
-  4 [label = "F4 Response"]
-  5 [label = "F5 Timeout" fill=orange]
-  6 [label = "F6 Success"  fill=green]
-  7 [label = "F7 Failure" fill=red]
+  4 [label = "F4 Response"fillcolor=lightblue]
+  5 [label = "F5 Timeout" fillcolor=orange]
+  6 [label = "F6 Success" fillcolor=green]
+  7 [label = "F7 Failure" fillcolor=red]
 }
