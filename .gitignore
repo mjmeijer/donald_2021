@@ -3,6 +3,7 @@ __pycache__
 running_deployment.md
 POST-data*.txt
 POST-data*.xlsx
+~$POST-data*.xlsx
 donald_2021.code-workspace
 static/animations.js
 static/.DS_Store
