@@ -1,6 +1,17 @@
 //
-// donald-2021 (c) copyright 2021-2023 Maarten Meijer / AUAS
+// (c) Copyright 2021-2025 Maarten Meijer / Amsterdam University of Applied Science
 //
+// IMPORTANT! DO NOT MAKE ANY CHANGES IN THIS FILE!!
+//
+//  All Donald improvements must be realised by changes in the file animations.js
+//  or they canot be used in the A/B testing set up on the server.
+//
+//  Instructions for possible changes are provided on the Github page where you got
+//  this code.
+//
+//  In der Beschränkung zeigt sich erst der Meister -- J W von Goethe (1802)
+//
+
 Array.prototype.rotateRight = function( n ) {
   this.unshift.apply( this, this.splice( n, this.length ) );
   return this;
@@ -59,8 +70,7 @@ function setup() {
   cb.option('zeg ik niet');
   cb.option('kleurenblind');
   cb.option('niet kleurenblind');
-  drugs.selected('zeg ik niet')
-
+  cb.selected('zeg ik niet')
 
   start = createButton('Starten');
   start.position(10, 230);
@@ -75,9 +85,11 @@ function startLoop() {
   frameRate(60);
   background(10);
   stroke(0);
+  if (typeof custom_setup === "function") {
+    custom_setup(windowWidth, windowHeight);
+  }
   loop();
 }
-
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
@@ -176,7 +188,7 @@ function buttons(x, y, w, h) {
 }
 
 function showButtons() {
-  if(typeof custom_buttons === "function"){
+  if (typeof custom_buttons === "function") {
     custom_buttons(0, 0, windowWidth, windowHeight);
   } else {
     buttons(0, 0, windowWidth, windowHeight);
@@ -352,7 +364,10 @@ function handleFailure() {
 
 // the short term memory tester program works from a gameloop or activity state machine
 function draw() {
-  // print('current activityState : ' + activityState + ', test level : ' + testLevel + ', current level : ' + currentLevel);
+  if (typeof custom_predraw === "function") {
+    custom_predraw();
+  }
+  //  print('current activityState : ' + activityState + ', test level : ' + testLevel + ', current level : ' + currentLevel);
   switch(activityState) {
   case 0:
     handleIdle();
@@ -380,5 +395,8 @@ function draw() {
     break;
   default:
     break;
+  }
+  if (typeof custom_postdraw === "function") {
+    custom_postdraw();
   }
 }
