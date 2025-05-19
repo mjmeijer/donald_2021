@@ -72,6 +72,22 @@ function setup() {
   cb.option('niet kleurenblind');
   cb.selected('zeg ik niet')
 
+  text("instructie", 10, 230)
+  instructie = createSelect();
+  instructie.position(10,235);
+  instructie.option('zeg ik niet');
+  instructie.option('donald is mij uitgelegd');
+  instructie.option('donald is mij niet uitgelegd');
+  instructie.selected('zeg ik niet')
+
+  text("eerder gespeeld", 10, 280)
+  eerder = createSelect();
+  eerder.position(10,285);
+  eerder.option('zeg ik niet');
+  eerder.option('ik heb donald eerder gespeeld');
+  eerder.option('ik heb donald niet eerder gespeeld');
+  eerder.selected('zeg ik niet')
+
   start = createButton('Starten');
   start.position(10, 230);
   start.mousePressed(startLoop);
@@ -79,7 +95,7 @@ function setup() {
 }
 
 function startLoop() {
-  questions = '' + age.value() + '\t' + awake.value() + '\t' + drugs.value() + '\t' + cb.value();
+  questions = '' + age.value() + '\t' + awake.value() + '\t' + drugs.value() + '\t' + cb.value()+ '\t' + instructie.value()+ '\t' + eerder.value();
   removeElements();
   testCounter = 0;
   frameRate(60);
