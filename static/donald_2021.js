@@ -89,7 +89,7 @@ function setup() {
   eerder.selected('zeg ik niet')
 
   start = createButton('Starten');
-  start.position(10, 230);
+  start.position(10, 330);
   start.mousePressed(startLoop);
   noLoop();
 }
