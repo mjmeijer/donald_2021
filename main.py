@@ -32,7 +32,7 @@ def alnum4(number):
     r = chars[int((number / m) % m)] + r
     r = chars[int((number / (m * m)) % m)] + r
     r = chars[int((number / (m * m * m)) % m)] + r
-    return 'S-' + r
+    return 'T-' + r
 
 
 #
