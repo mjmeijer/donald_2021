@@ -31,5 +31,5 @@ rsa==4.9
 six==1.17.0
 terminaltables==3.1.10
 tomli==2.2.1
-urllib3==2.6.0
+urllib3==2.6.3
 Werkzeug==3.1.4
