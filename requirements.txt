@@ -23,7 +23,7 @@ packaging==24.2
 pip-tools==7.4.1
 pip-upgrader==1.4.15
 proto-plus==1.26.1
-pyasn1==0.6.1
+pyasn1==0.6.2
 pyasn1-modules==0.4.2
 pyproject_hooks==1.2.0
 requests==2.32.4
