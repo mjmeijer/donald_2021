@@ -32,7 +32,7 @@ def alnum4(number):
     r = chars[int((number / m) % m)] + r
     r = chars[int((number / (m * m)) % m)] + r
     r = chars[int((number / (m * m * m)) % m)] + r
-    return 'T-' + r
+    return 'U-' + r
 
 
 #
@@ -93,13 +93,13 @@ def delete_old_testRecords():
 
 #    entities = True
 #    while entities:
-    query = client.query(kind=kind)
-    query.add_filter('timeStamp', '<=', current_year)
+#    query = client.query(kind=kind)
+#    query.add_filter('timeStamp', '<=', current_year)
 #    query.add_filter('testID', '<=', 'S-0000')
-    entities = list(query.fetch(limit=fetch_limit))
-    for entity in entities:
+#    entities = list(query.fetch(limit=fetch_limit))
+#    for entity in entities:
         #        print('Deleting: {}'.format(entity))
-        client.delete(entity.key)
+#        client.delete(entity.key)
 
 
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
@@ -134,7 +134,7 @@ filename = 'testID-'
 
 @app.route('/q', methods=['GET', 'POST'])
 def retrieve():
-    delete_old_testRecords()
+#    delete_old_testRecords()
 
     if request.method == 'POST':
         testID = request.form.get('ID')
@@ -155,7 +155,7 @@ def retrieve():
             query.add_filter('testID', '=', testID)
             query.order = ["testIndex"]
         else:
-            query.add_filter('testID', '>=', 'S-0000')
+            query.add_filter('testID', '>=', 'U-0000')
             query.order = ["testID", "testIndex"]
 #        if testSet:
 #            query.add_filter('testSet', '=', testSet)
