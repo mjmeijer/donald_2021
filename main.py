@@ -89,13 +89,12 @@ def delete_old_testRecords():
     return # all are deleted already
     kind = 'testRecord'
     fetch_limit = 200
-    current_year = datetime(2025, 8, 1)
+    current_year = datetime(2025, 5, 21)
 
     entities = True
     while entities:
         query = client.query(kind=kind)
         query.add_filter('timeStamp', '<=', current_year)
-#    query.add_filter('testID', '<=', 'S-0000')
         entities = list(query.fetch(limit=fetch_limit))
         for entity in entities:
         #        print('Deleting: {}'.format(entity))
@@ -155,8 +154,8 @@ def retrieve():
             query.add_filter('testID', '=', testID)
             query.order = ["testIndex"]
         else:
-            current_year = datetime(2025, 8, 1)
-            query.add_filter('timeStamp', '<=', current_year)
+            current_year = datetime(2025, 5, 22)
+            query.add_filter('timeStamp', '>=', current_year)
             query.order = ["testID", "testIndex"]
 #        if testSet:
 #            query.add_filter('testSet', '=', testSet)
