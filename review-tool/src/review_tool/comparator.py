@@ -7,7 +7,8 @@ from .utils import (
     extract_id,
     extract_timings,
     extract_color_arrays,
-    extract_functions
+    extract_functions,
+    extract_p5_synth_references
 )
 
 
@@ -22,8 +23,11 @@ class ComparisonResult:
         self.color_similarity = 0.0
         self.function_similarity = 0.0
         self.timing_changes: Dict[str, Tuple[int, int]] = {}  # name -> (base, student)
-        self.color_changes: Dict[str, Tuple[List, List]] = {}  # name -> (base, student)
+        self.color_changes: Dict[str, Tuple[List, List]] = {}  # name -> (base, student) - modified arrays
+        self.color_arrays_added: Dict[str, List] = {}  # name -> colors (new arrays not in base)
+        self.color_arrays_removed: Dict[str, List] = {}  # name -> colors (removed from student)
         self.function_changes: List[str] = []
+        self.p5_synth_references: Dict[str, List[str]] = {}  # function_name -> list of synth references
         self.id_changed = False
         self.student_id = ""
         self.base_id = ""
@@ -108,17 +112,25 @@ def compare_to_base(student_file: str, base_file: str) -> ComparisonResult:
     color_total = len(base_colors)
     color_matches = 0
     
+    # Track which arrays are modified, added, or removed
     for array_name in base_colors:
         if array_name in student_colors:
             if student_colors[array_name] == base_colors[array_name]:
                 color_matches += 1
             else:
+                # Array exists in both but with different colors
                 result.color_changes[array_name] = (
                     base_colors[array_name],
                     student_colors[array_name]
                 )
         else:
-            result.color_changes[array_name] = (base_colors[array_name], [])
+            # Array was removed from student
+            result.color_arrays_removed[array_name] = base_colors[array_name]
+    
+    # Check for added arrays (in student but not in base)
+    for array_name in student_colors:
+        if array_name not in base_colors:
+            result.color_arrays_added[array_name] = student_colors[array_name]
     
     result.color_similarity = (color_matches / color_total * 100) if color_total > 0 else 0
     
@@ -146,6 +158,9 @@ def compare_to_base(student_file: str, base_file: str) -> ComparisonResult:
             result.function_changes.append(func_name)
     
     result.function_similarity = (function_matches / function_total * 100) if function_total > 0 else 0
+    
+    # Extract p5 synth references
+    result.p5_synth_references = extract_p5_synth_references(student_content, student_functions)
     
     # Calculate overall similarity as weighted average
     # Weight: 30% timings, 40% colors, 30% functions

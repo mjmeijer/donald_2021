@@ -156,3 +156,48 @@ def get_required_color_arrays() -> List[str]:
 def get_required_timings() -> List[str]:
     """Return list of required timing variable names."""
     return [f"T{i}" for i in range(8)]
+
+
+def extract_p5_synth_references(content: str, functions: Dict[str, str]) -> Dict[str, List[str]]:
+    """
+    Extract p5.Oscillator() and p5.PolySynth() references and their containing functions.
+    
+    Args:
+        content: Full file content
+        functions: Dictionary of function names and bodies (from extract_functions)
+    
+    Returns:
+        Dictionary mapping function names or "global" to list of synth references found
+    """
+    synth_references: Dict[str, List[str]] = {}
+    
+    # Check for global-level synth declarations
+    global_refs = []
+    
+    # Check for PolySynth - case sensitive, exact match
+    has_polysynth = "p5.PolySynth" in content
+    has_oscillator = "p5.Oscillator" in content
+    
+    if has_polysynth:
+        global_refs.append("PolySynth")
+    
+    if has_oscillator:
+        global_refs.append("Oscillator")
+    
+    if global_refs:
+        synth_references["global"] = sorted(global_refs)
+    
+    # Check for synth references inside functions  
+    for func_name, func_body in functions.items():
+        refs = []
+        
+        if "p5.PolySynth" in func_body and "PolySynth" not in global_refs:
+            refs.append("PolySynth")
+        
+        if "p5.Oscillator" in func_body and "Oscillator" not in global_refs:
+            refs.append("Oscillator")
+        
+        if refs:
+            synth_references[func_name] = sorted(refs)
+    
+    return synth_references

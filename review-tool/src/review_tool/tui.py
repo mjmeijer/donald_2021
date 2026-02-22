@@ -113,24 +113,66 @@ class ValidationPanel(Static):
                 sign = "+" if diff > 0 else ""
                 output += f"  {name}: {base_val} → {student_val}  ({sign}{diff})\n"
         
+        if comp.color_arrays_added:
+            output += f"\n[bold green]✚ Color Arrays Added ({len(comp.color_arrays_added)}):[/bold green]\n"
+            for name in sorted(comp.color_arrays_added.keys()):
+                colors = comp.color_arrays_added[name]
+                output += f"  + {name} ({len(colors)} colors)\n"
+        
+        if comp.color_arrays_removed:
+            output += f"\n[bold red]✖ Color Arrays Removed ({len(comp.color_arrays_removed)}):[/bold red]\n"
+            for name in sorted(comp.color_arrays_removed.keys()):
+                colors = comp.color_arrays_removed[name]
+                output += f"  - {name} ({len(colors)} colors)\n"
+        
         if comp.color_changes:
-            output += f"\n[bold]Color Array Changes ({len(comp.color_changes)}):[/bold]\n"
+            output += f"\n[bold yellow]⟳ Color Arrays Modified ({len(comp.color_changes)}):[/bold yellow]\n"
             for name in sorted(comp.color_changes.keys()):
                 base_colors, student_colors = comp.color_changes[name]
                 if len(base_colors) != len(student_colors):
-                    output += f"  {name}: {len(base_colors)} colors → {len(student_colors)} colors\n"
+                    output += f"  {name}: {len(base_colors)} → {len(student_colors)} colors\n"
                 else:
                     diffs = sum(1 for i in range(len(base_colors)) 
                                if base_colors[i] != student_colors[i])
                     if diffs > 0:
-                        output += f"  {name}: {diffs} of {len(base_colors)} colors changed\n"
+                        output += f"  {name}: {diffs}/{len(base_colors)} colors changed\n"
         
         if comp.function_changes:
             output += f"\n[bold]Modified Functions ({len(comp.function_changes)}):[/bold]\n"
             for func_name in sorted(comp.function_changes):
                 output += f"  • {func_name}()\n"
         
-        if not comp.timing_changes and not comp.color_changes and not comp.function_changes:
+        # Separate reporting for p5.Oscillator and p5.PolySynth
+        if comp.p5_synth_references:
+            # Separate refs by type
+            oscillator_scopes = []
+            polysynth_scopes = []
+            
+            for scope, refs in comp.p5_synth_references.items():
+                if "Oscillator" in refs:
+                    oscillator_scopes.append(scope)
+                if "PolySynth" in refs:
+                    polysynth_scopes.append(scope)
+            
+            # Report p5.Oscillator usage
+            if oscillator_scopes:
+                output += f"\n[bold blue]🎺 p5.Oscillator Detected[/bold blue]\n"
+                if "global" in oscillator_scopes:
+                    output += f"  [global scope]\n"
+                for scope in sorted(oscillator_scopes):
+                    if scope != "global":
+                        output += f"  • {scope}()\n"
+            
+            # Report p5.PolySynth usage
+            if polysynth_scopes:
+                output += f"\n[bold magenta]🎹 p5.PolySynth Detected[/bold magenta]\n"
+                if "global" in polysynth_scopes:
+                    output += f"  [global scope]\n"
+                for scope in sorted(polysynth_scopes):
+                    if scope != "global":
+                        output += f"  • {scope}()\n"
+        
+        if not comp.timing_changes and not comp.color_arrays_added and not comp.color_arrays_removed and not comp.color_changes and not comp.function_changes and not comp.p5_synth_references:
             output += "[dim]No changes detected from base[/dim]\n"
         
         return output
@@ -186,7 +228,7 @@ class ReviewApp(App):
     }
     
     FileBrowser {
-        width: 30;
+        width: 40;
         border: solid $primary;
         background: $panel;
         padding: 1;

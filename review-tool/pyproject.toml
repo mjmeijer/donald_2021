@@ -11,6 +11,11 @@ dependencies = [
     "textual>=0.60.0",
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0",
+]
+
 [project.scripts]
 review-tool = "review_tool:main"
 
