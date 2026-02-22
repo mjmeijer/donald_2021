@@ -2,4 +2,5 @@ animations-*.js
 !animations-[0-4].js
 !animations-COLORBLIND.js
 !animations-POLYSYNTH.js
+!animations-OSCILLATOR.js
 data
