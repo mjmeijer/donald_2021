@@ -109,10 +109,18 @@ def validate_animation_file(filepath: str) -> ValidationResult:
     color_arrays = extract_color_arrays(content)
     missing_arrays = []
     undersized_arrays = []
+    variant_arrays = []
     
     for array_name in get_required_color_arrays():
         if array_name not in color_arrays:
-            missing_arrays.append(array_name)
+            # Check if there are variant arrays (e.g., blokColors0, blokColors1, blokColors2, blokColors3)
+            variants = [k for k in color_arrays.keys() if k.startswith(array_name) and k != array_name]
+            if variants:
+                # Array replaced with indexed variants
+                variant_arrays.append(f"{array_name} replaced with: {', '.join(sorted(variants))}")
+            else:
+                # Array is truly missing
+                missing_arrays.append(array_name)
         else:
             # Most arrays should have 12 colors, but colorblind variants might differ
             if len(color_arrays[array_name]) != 12:
@@ -122,6 +130,10 @@ def validate_animation_file(filepath: str) -> ValidationResult:
     
     if missing_arrays:
         result.add_error(f"Missing color arrays: {', '.join(missing_arrays)}")
+    
+    if variant_arrays:
+        for variant_msg in variant_arrays:
+            result.add_warning(f"Color array structure changed: {variant_msg}")
     
     if undersized_arrays:
         result.add_warning(f"Arrays with fewer than 8 colors: {', '.join(undersized_arrays)}")

@@ -62,13 +62,33 @@ def extract_timings(content: str) -> Dict[str, int]:
 def extract_color_arrays(content: str) -> Dict[str, List[str]]:
     """
     Extract color arrays from JavaScript content.
+    Supports multiple syntax styles:
+    - var name = [ ... ];
+    - var name = new Array( ... );
+    - var name = Array(size).fill('color');
     
     Returns:
         Dictionary mapping array names to their color entries
     """
     color_arrays = {}
-    array_pattern = r"var\s+(\w+Colors)\s*=\s*new\s+Array\(([\s\S]*?)\);"
     
+    # Pattern 1: bracket syntax var name = [ ... ];
+    bracket_pattern = r"var\s+(\w+Colors\d*)\s*=\s*\[([\s\S]*?)\];"
+    # Pattern 2: new Array syntax var name = new Array( ... );
+    array_pattern = r"var\s+(\w+Colors\d*)\s*=\s*new\s+Array\(([\s\S]*?)\);"
+    # Pattern 3: Array(size).fill('color') syntax - more flexible
+    fill_pattern = r"var\s+(\w+Colors\d*)\s*=\s*Array\(\s*\d+\s*\)\.fill\(\s*(['\"])([^'\"]+)\2\s*\);"
+    
+    # Try bracket syntax first
+    for match in re.finditer(bracket_pattern, content):
+        array_name = match.group(1)
+        array_content = match.group(2)
+        
+        # Extract color entries (quoted strings and hex values)
+        colors = re.findall(r"['\"]([^'\"]+)['\"]", array_content)
+        color_arrays[array_name] = colors
+    
+    # Try new Array syntax
     for match in re.finditer(array_pattern, content):
         array_name = match.group(1)
         array_content = match.group(2)
@@ -76,6 +96,13 @@ def extract_color_arrays(content: str) -> Dict[str, List[str]]:
         # Extract color entries (quoted strings)
         colors = re.findall(r"['\"]([^'\"]+)['\"]", array_content)
         color_arrays[array_name] = colors
+    
+    # Try Array(size).fill('color') syntax
+    for match in re.finditer(fill_pattern, content):
+        array_name = match.group(1)
+        color_value = match.group(3)
+        # For fill, we create an array with 12 repeated entries
+        color_arrays[array_name] = [color_value] * 12
     
     return color_arrays
 
@@ -88,7 +115,7 @@ def extract_functions(content: str) -> Dict[str, str]:
         Dictionary mapping function names to their body content
     """
     functions = {}
-    function_pattern = r"function\s+(\w+)\s*\((.*?)\)\s*\{([\s\S]*?)\n\}"
+    function_pattern = r"function\s+(\w+)\s*\((.*?)\)\s*\{([\s\S]*?)\}"
     
     for match in re.finditer(function_pattern, content):
         func_name = match.group(1)
