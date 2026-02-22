@@ -1,0 +1,203 @@
+"""Utility functions for animation file parsing and discovery."""
+
+import os
+import re
+from pathlib import Path
+from typing import List, Dict, Tuple
+
+
+def find_animation_files(directory: str) -> List[str]:
+    """
+    Find all animation-*.js files in a directory (excluding animations.js).
+    
+    Args:
+        directory: Path to search for animation files
+        
+    Returns:
+        List of matching file paths sorted alphabetically
+    """
+    anim_dir = Path(directory)
+    if not anim_dir.exists():
+        return []
+    
+    files = sorted([
+        str(f) for f in anim_dir.glob("animations-*.js")
+        if f.name != "animations.js"
+    ])
+    return files
+
+
+def read_file(filepath: str) -> str:
+    """Read a JavaScript file."""
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            return f.read()
+    except Exception as e:
+        return f"ERROR: Could not read file: {e}"
+
+
+def extract_id(content: str) -> str:
+    """Extract the 'id' variable from JavaScript content."""
+    match = re.search(r"var\s+id\s*=\s*['\"]([^'\"]+)['\"]", content)
+    return match.group(1) if match else "NOT_FOUND"
+
+
+def extract_timings(content: str) -> Dict[str, int]:
+    """
+    Extract timing variables (T0-T7) from JavaScript content.
+    
+    Returns:
+        Dictionary mapping timing names to values (or -1 if not found)
+    """
+    timings = {}
+    for i in range(8):
+        # Pattern: var T<i>_NAME = <number>;
+        pattern = rf"var\s+T{i}_\w+\s*=\s*(\d+)"
+        match = re.search(pattern, content)
+        key = f"T{i}"
+        timings[key] = int(match.group(1)) if match else -1
+    return timings
+
+
+def extract_color_arrays(content: str) -> Dict[str, List[str]]:
+    """
+    Extract color arrays from JavaScript content.
+    Supports multiple syntax styles:
+    - var name = [ ... ];
+    - var name = new Array( ... );
+    - var name = Array(size).fill('color');
+    
+    Returns:
+        Dictionary mapping array names to their color entries
+    """
+    color_arrays = {}
+    
+    # Pattern 1: bracket syntax var name = [ ... ];
+    bracket_pattern = r"var\s+(\w+Colors\d*)\s*=\s*\[([\s\S]*?)\];"
+    # Pattern 2: new Array syntax var name = new Array( ... );
+    array_pattern = r"var\s+(\w+Colors\d*)\s*=\s*new\s+Array\(([\s\S]*?)\);"
+    # Pattern 3: Array(size).fill('color') syntax - more flexible
+    fill_pattern = r"var\s+(\w+Colors\d*)\s*=\s*Array\(\s*\d+\s*\)\.fill\(\s*(['\"])([^'\"]+)\2\s*\);"
+    
+    # Try bracket syntax first
+    for match in re.finditer(bracket_pattern, content):
+        array_name = match.group(1)
+        array_content = match.group(2)
+        
+        # Extract color entries (quoted strings and hex values)
+        colors = re.findall(r"['\"]([^'\"]+)['\"]", array_content)
+        color_arrays[array_name] = colors
+    
+    # Try new Array syntax
+    for match in re.finditer(array_pattern, content):
+        array_name = match.group(1)
+        array_content = match.group(2)
+        
+        # Extract color entries (quoted strings)
+        colors = re.findall(r"['\"]([^'\"]+)['\"]", array_content)
+        color_arrays[array_name] = colors
+    
+    # Try Array(size).fill('color') syntax
+    for match in re.finditer(fill_pattern, content):
+        array_name = match.group(1)
+        color_value = match.group(3)
+        # For fill, we create an array with 12 repeated entries
+        color_arrays[array_name] = [color_value] * 12
+    
+    return color_arrays
+
+
+def extract_functions(content: str) -> Dict[str, str]:
+    """
+    Extract function definitions from JavaScript content.
+    
+    Returns:
+        Dictionary mapping function names to their body content
+    """
+    functions = {}
+    function_pattern = r"function\s+(\w+)\s*\((.*?)\)\s*\{([\s\S]*?)\}"
+    
+    for match in re.finditer(function_pattern, content):
+        func_name = match.group(1)
+        func_body = match.group(3).strip()
+        functions[func_name] = func_body
+    
+    return functions
+
+
+def get_required_functions() -> List[str]:
+    """Return list of required function names."""
+    return [
+        "showIdle",
+        "showPrepare",
+        "showTestStep",
+        "showDecay",
+        "showCountdown",
+        "showTimeout",
+        "showSuccess",
+        "showFailure"
+    ]
+
+
+def get_required_color_arrays() -> List[str]:
+    """Return list of required color array names."""
+    return [
+        "idleColors",
+        "prepColors",
+        "blokColors",
+        "decayColors",
+        "countColors",
+        "timeoutColors",
+        "successColors",
+        "failColors"
+    ]
+
+
+def get_required_timings() -> List[str]:
+    """Return list of required timing variable names."""
+    return [f"T{i}" for i in range(8)]
+
+
+def extract_p5_synth_references(content: str, functions: Dict[str, str]) -> Dict[str, List[str]]:
+    """
+    Extract p5.Oscillator() and p5.PolySynth() references and their containing functions.
+    
+    Args:
+        content: Full file content
+        functions: Dictionary of function names and bodies (from extract_functions)
+    
+    Returns:
+        Dictionary mapping function names or "global" to list of synth references found
+    """
+    synth_references: Dict[str, List[str]] = {}
+    
+    # Check for global-level synth declarations
+    global_refs = []
+    
+    # Check for PolySynth - case sensitive, exact match
+    has_polysynth = "p5.PolySynth" in content
+    has_oscillator = "p5.Oscillator" in content
+    
+    if has_polysynth:
+        global_refs.append("PolySynth")
+    
+    if has_oscillator:
+        global_refs.append("Oscillator")
+    
+    if global_refs:
+        synth_references["global"] = sorted(global_refs)
+    
+    # Check for synth references inside functions  
+    for func_name, func_body in functions.items():
+        refs = []
+        
+        if "p5.PolySynth" in func_body and "PolySynth" not in global_refs:
+            refs.append("PolySynth")
+        
+        if "p5.Oscillator" in func_body and "Oscillator" not in global_refs:
+            refs.append("Oscillator")
+        
+        if refs:
+            synth_references[func_name] = sorted(refs)
+    
+    return synth_references
