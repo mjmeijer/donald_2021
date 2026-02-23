@@ -47,7 +47,7 @@ uv pip install -e .
 
 ### Validate all files in a directory
 ```bash
-review-tool /Users/maarten/Library/CloudStorage/Dropbox/dev_hva/appengine/donald_2021/application/static/ --validate
+review-tool /path/to/animations/ --validate
 ```
 
 ### Use default base file (animations.js in same directory)

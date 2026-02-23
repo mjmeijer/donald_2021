@@ -131,18 +131,11 @@ dependencies = [
     { name = "textual" },
 ]
 
-[package.optional-dependencies]
-test = [
-    { name = "pytest" },
-]
-
 [package.metadata]
 requires-dist = [
     { name = "pytest", specifier = ">=9.0.2" },
-    { name = "pytest", marker = "extra == 'test'", specifier = ">=7.0.0" },
     { name = "textual", specifier = ">=0.60.0" },
 ]
-provides-extras = ["test"]
 
 [[package]]
 name = "rich"
