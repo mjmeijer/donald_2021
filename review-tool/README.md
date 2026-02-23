@@ -18,6 +18,13 @@ A Python tool for reviewing and analyzing student JavaScript animation submissio
   - **Functions**: Did the student modify animation logic?
 - **Change Detection**: Identifies specific modifications made
 
+
+### Sound Detection
+- **p5.Oscillator Detection**: Automatically detects use of `p5.Oscillator()` for tone generation
+- **p5.PolySynth Detection**: Automatically detects use of `p5.PolySynth()` for polyphonic synthesis
+- **Scope Tracking**: Shows whether sound objects are used globally or within specific functions
+- **Visual Indicators**: 🎺 for Oscillator, 🎹 for PolySynth in the UI
+
 ### Two Modes of Operation
 
 #### 1. Validation Mode (CLI)
@@ -31,9 +38,10 @@ Outputs a detailed report of all files with validation results and similarity sc
 review-tool /path/to/static/
 ```
 Launches a textual user interface with:
-- **Left Panel**: File browser showing all animation-*.js files
-- **Right Panel**: Detailed validation and comparison results for selected file
-- **Navigation**: Use arrow keys to select files, `r` to refresh, `q` to quit
+- **Left Panel**: File browser showing all animation-*.js files (scrollable)
+- **Right Panel**: Detailed validation and comparison results for selected file (scrollable)
+- **Navigation**: Use arrow keys to select files, scroll with mouse or arrow keys, `r` to refresh, `q` to quit
+- **Auto-scroll**: Right panel automatically scrolls when content exceeds viewport height
 
 ## Installation
 
@@ -93,7 +101,8 @@ Overall:    72.5%
 - **[utils.py](src/review_tool/utils.py)**: File discovery and parsing
   - `find_animation_files()`: Locate animation-*.js files
   - `extract_id()`, `extract_timings()`, `extract_color_arrays()`, `extract_functions()`
-  
+  - `extract_p5_synth_references()`: Detect p5.Oscillator and p5.PolySynth usage
+   
 - **[validator.py](src/review_tool/validator.py)**: Submission validation
   - `validate_animation_file()`: Run all validation checks
   - `ValidationResult`: Class holding validation status and error messages
@@ -104,8 +113,8 @@ Overall:    72.5%
   
 - **[tui.py](src/review_tool/tui.py)**: Textual user interface
   - `ReviewApp`: Main application class
-  - `FileBrowser`: Tree widget for file selection
-  - `ValidationPanel`: Display area for results
+  - `FileBrowser`: Scrollable widget for file selection
+  - `ValidationPanel`: Scrollable display area for results with reactive updates
   
 - **[__init__.py](src/review_tool/__init__.py)**: CLI entry point
 
@@ -150,7 +159,14 @@ Timing Changes (5):
 
 ### Running Tests
 ```bash
-python -m py_compile src/review_tool/*.py
+pytest
+```
+
+Run specific test suites:
+```bash
+pytest tests/test_extraction.py     # Sound detection tests
+pytest tests/test_comparison.py     # Comparison logic tests
+pytest tests/test_tui_render_comparison.py  # UI rendering tests
 ```
 
 ### Building
