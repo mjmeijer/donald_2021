@@ -20,7 +20,7 @@ class FileSelectedMessage(Message):
         self.filepath = filepath
 
 
-class ValidationPanel(Static):
+class ValidationPanel(VerticalScroll):
     """Right panel showing validation results."""
     
     validation_result = reactive(None)
