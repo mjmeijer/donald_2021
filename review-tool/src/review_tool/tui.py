@@ -194,27 +194,25 @@ class FileBrowser(VerticalScroll):
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.files_list = {}
+        self.file_buttons = {}
     
     def populate_files(self, files: list):
         """Populate the button list with file list."""
-        # Remove all existing buttons
-        self.query("Button").remove()
-        self.files_list = {}
+        # Remove all existing children using remove_children which handles cleanup properly
+        self.remove_children()
+        self.file_buttons = {}
         
-        # Add buttons for each file
+        # Add buttons for each file - no IDs needed
         for filepath in files:
             filename = Path(filepath).name
-            button_id = f"file_{len(self.files_list)}"
-            button = Button(f"📄 {filename}", id=button_id)
-            self.files_list[button_id] = filepath
+            button = Button(f"📄 {filename}")
+            self.file_buttons[button] = filepath
             self.mount(button)
     
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Handle button press - update file when clicked."""
-        button_id = event.button.id
-        if button_id in self.files_list:
-            filepath = self.files_list[button_id]
+        if event.button in self.file_buttons:
+            filepath = self.file_buttons[event.button]
             self.post_message(FileSelectedMessage(filepath))
 
 
