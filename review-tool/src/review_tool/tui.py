@@ -21,7 +21,7 @@ class FileSelectedMessage(Message):
 
 
 class ValidationPanel(VerticalScroll):
-    """Right panel showing validation results."""
+    """Right panel showing validation results with scrolling."""
     
     validation_result = reactive(None)
     comparison_result = reactive(None)
@@ -30,14 +30,37 @@ class ValidationPanel(VerticalScroll):
     def __init__(self, base_file: str, **kwargs):
         super().__init__(**kwargs)
         self.base_file = base_file
+        self.content_widget = None
     
-    def render(self) -> str:
-        """Render the validation results."""
+    def on_mount(self):
+        """Initialize the content widget when mounted."""
+        self.content_widget = Static("")
+        self.mount(self.content_widget)
+    
+    def watch_validation_result(self, new_value):
+        """Update display when validation result changes."""
+        self._update_display()
+    
+    def watch_comparison_result(self, new_value):
+        """Update display when comparison result changes."""
+        self._update_display()
+    
+    def watch_selected_file(self, new_value):
+        """Update display when selected file changes."""
+        self._update_display()
+    
+    def _update_display(self):
+        """Update the content widget with current results."""
+        if not self.content_widget:
+            return
+            
         if not self.selected_file:
-            return "[dim]👈 Select a file on the left to see details[/dim]"
+            self.content_widget.update("[dim]👈 Select a file on the left to see details[/dim]")
+            return
         
         if not self.validation_result:
-            return "[dim]Loading...[/dim]"
+            self.content_widget.update("[dim]Loading...[/dim]")
+            return
         
         # Get just the filename for display
         filename = Path(self.selected_file).name
@@ -52,7 +75,7 @@ class ValidationPanel(VerticalScroll):
         if self.comparison_result:
             output += self._render_comparison(self.comparison_result)
         
-        return output
+        self.content_widget.update(output)
     
     def _render_validation(self, result: ValidationResult) -> str:
         """Render validation results."""
@@ -185,8 +208,6 @@ class ValidationPanel(VerticalScroll):
         
         self.validation_result = val_result
         self.comparison_result = comp_result
-        # Force a refresh to update the display
-        self.refresh()
 
 
 class FileBrowser(VerticalScroll):
