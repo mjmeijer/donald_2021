@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import os
+import re
 from textual.app import ComposeResult, App
 from textual.containers import Horizontal, VerticalScroll
 from textual.widgets import Header, Footer, Static, Button
@@ -11,6 +12,11 @@ from textual.message import Message
 from .utils import find_animation_files
 from .validator import validate_animation_file, ValidationResult
 from .comparator import compare_to_base, ComparisonResult, get_similarity_color
+
+
+def _strip_markup(text: str) -> str:
+    """Remove Rich markup tags from text."""
+    return re.sub(r'\[/?[^\]]*\]', '', text)
 
 
 class FileSelectedMessage(Message):
@@ -75,6 +81,7 @@ class ValidationPanel(VerticalScroll):
         if self.comparison_result:
             output += self._render_comparison(self.comparison_result)
         
+        self._last_report = output
         self.content_widget.update(output)
     
     def _render_validation(self, result: ValidationResult) -> str:
@@ -98,7 +105,9 @@ class ValidationPanel(VerticalScroll):
             output += "\n"
         
         if not result.errors and not result.warnings:
-            output += "[green]✓ All validation checks passed![/green]\n\n"
+            url_key = os.path.basename(result.filepath)
+            url_key = url_key.replace(".js", "").replace("animations-", "")
+            output += f"[green]✓ All validation checks passed![/green]\n\nYou can test with https://donald-2021.appspot.com/?set={url_key}\n\n"
         
         return output
     
@@ -209,6 +218,10 @@ class ValidationPanel(VerticalScroll):
         self.validation_result = val_result
         self.comparison_result = comp_result
 
+    def get_plain_report(self) -> str:
+        """Return the current report as plain text (Rich markup stripped)."""
+        return _strip_markup(getattr(self, '_last_report', ''))
+
 
 class FileBrowser(VerticalScroll):
     """Button list widget for browsing animation files."""
@@ -269,6 +282,7 @@ class ReviewApp(App):
     BINDINGS = [
         ("q", "quit", "Quit"),
         ("r", "refresh", "Refresh"),
+        ("c", "copy_report", "Copy"),
     ]
     
     def __init__(self, animation_dir: str, base_file: str, **kwargs):
@@ -317,6 +331,15 @@ class ReviewApp(App):
         
         if self.animation_files:
             self.validation_panel.update_file(self.animation_files[0])
+
+    def action_copy_report(self):
+        """Copy the current validation report to the system clipboard."""
+        if self.validation_panel and self.validation_panel.selected_file:
+            plain = self.validation_panel.get_plain_report()
+            self.copy_to_clipboard(plain)
+            self.notify("Report copied to clipboard!")
+        else:
+            self.notify("No file selected", severity="warning")
 
 
 def run_tui(animation_dir: str):

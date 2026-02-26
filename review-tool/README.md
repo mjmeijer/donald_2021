@@ -41,6 +41,7 @@ Launches a textual user interface with:
 - **Left Panel**: File browser showing all animation-*.js files (scrollable)
 - **Right Panel**: Detailed validation and comparison results for selected file (scrollable)
 - **Navigation**: Use arrow keys to select files, scroll with mouse or arrow keys, `r` to refresh, `q` to quit
+- **Copy to Clipboard**: Press `c` to copy the current report as plain text to the system clipboard (requires a modern terminal: iTerm2, Ghostty, kitty, or WezTerm)
 - **Auto-scroll**: Right panel automatically scrolls when content exceeds viewport height
 
 ## Installation
