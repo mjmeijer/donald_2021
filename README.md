@@ -130,12 +130,12 @@ T-00ZI	19	PARAMS-0	10	60	20	60	240	3,2,3,2	3,2,3,3	wrong	120	1	412x766	2021-01-2
 This sequence is composed of:
  - testID
  - testCounter
- - test PARAMS set
- - `T0_IDLE`
- - `T1_WARN`
- - `T2_SHOWTEST`
- - `T3_DECAY`
- - `T4_COUNTDOWN`
+ - test PARAMS set, te version of the interaction tested
+ - `T0_IDLE`, time before interaction starts
+ - `T1_WARN`, time before sequence is shown
+ - `T2_SHOWTEST`, total time for displaying the test sequence
+ - `T3_DECAY`, time before you can enter the memorized sequence
+ - `T4_COUNTDOWN`, time to enter the meorized sequence
  - requested sequence
  - recorded sequence
  - status _correct | wrong | timeout_
