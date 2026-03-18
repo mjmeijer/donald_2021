@@ -24,7 +24,7 @@ dependencies = [
     "MarkupSafe==3.0.3",
     "proto-plus==1.27.1",
     "protobuf==5.29.6",
-    "pyasn1==0.6.2",
+    "pyasn1==0.6.3",
     "pyasn1_modules==0.4.2",
     "requests==2.32.5",
     "rsa==4.9.1",
