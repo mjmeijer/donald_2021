@@ -3,6 +3,7 @@
 from pathlib import Path
 import os
 import re
+from unittest import result
 from textual.app import ComposeResult, App
 from textual.containers import Horizontal, VerticalScroll
 from textual.widgets import Header, Footer, Static, Button
@@ -105,10 +106,11 @@ class ValidationPanel(VerticalScroll):
             output += "\n"
         
         if not result.errors and not result.warnings:
-            url_key = os.path.basename(result.filepath)
-            url_key = url_key.replace(".js", "").replace("animations-", "")
-            output += f"[green]✓ All validation checks passed![/green]\n\nYou can test with https://donald-2021.appspot.com/?set={url_key}\n\n"
-        
+             output += f"[green]✓ All validation checks passed![/green]\n"
+            
+        url_key = os.path.basename(result.filepath)
+        url_key = url_key.replace(".js", "").replace("animations-", "")
+        output += f"\nYou can test with https://donald-2021.appspot.com/?set={url_key}\n\n"
         return output
     
     def _render_comparison(self, comp: ComparisonResult) -> str:
