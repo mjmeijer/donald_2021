@@ -16,6 +16,7 @@
 from flask import Flask, Response, render_template, request, stream_with_context
 
 from google.cloud import datastore
+from google.cloud.datastore.query import PropertyFilter
 from datetime import datetime
 
 #
@@ -94,7 +95,7 @@ def delete_old_testRecords():
     entities = True
     while entities:
         query = client.query(kind=kind)
-        query.add_filter('timeStamp', '<=', current_year)
+        query.add_filter(filter=PropertyFilter('timeStamp', '<=', current_year))
         entities = list(query.fetch(limit=fetch_limit))
         for entity in entities:
         #        print('Deleting: {}'.format(entity))
@@ -151,11 +152,11 @@ def retrieve():
         global filename
         query = client.query(kind="testRecord")
         if testID:
-            query.add_filter('testID', '=', testID)
+            query.add_filter(filter=PropertyFilter('testID', '=', testID))
             query.order = ["testIndex"]
         else:
             current_year = datetime(2025, 5, 22)
-            query.add_filter('timeStamp', '>=', current_year)
+            query.add_filter(filter=PropertyFilter('timeStamp', '>=', current_year))
             query.order = ["testID", "testIndex"]
 #        if testSet:
 #            query.add_filter('testSet', '=', testSet)
