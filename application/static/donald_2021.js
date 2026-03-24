@@ -101,6 +101,7 @@ function startLoop() {
   frameRate(60);
   background(10);
   stroke(0);
+  testCounter = 0;
   if (typeof custom_setup === "function") {
     custom_setup(windowWidth, windowHeight);
   }
@@ -124,34 +125,34 @@ function distance(x1, y1, x2, y2) {
  * touch events, like swiping left for "back" or scrolling
  * the page.
  */
-function touchStarted(){
-  if(isLooping()) return false;
+function touchStarted() {
+  if (isLooping()) {return false;}
 }
 
-function touchMoved(){
-  if(isLooping()) return false;
+function touchMoved() {
+  if (isLooping()) {return false;}
 }
 
 
 function touchEnded() {
-  if(isLooping()) {
+  if (isLooping()) {
 
-  ellipse(mouseX, mouseY, 50, 50);
+    ellipse(mouseX, mouseY, 50, 50);
 
-  if (distance(mouseX, mouseY, windowWidth/2, windowHeight/2) < 150) {
-    fullscreen(!fullscreen());
-    return;
-  }
-  // prevent default
-  b = 0;
-  if (mouseX > windowWidth / 2) {
-    b += 2;
-  }
-  if (mouseY > windowHeight / 2) {
-    b += 1;
-  }
-  lastButton = Array(0, 1, 3, 2)[b];
-  return false;
+    if (distance(mouseX, mouseY, windowWidth/2, windowHeight/2) < 150) {
+      fullscreen(!fullscreen());
+      return;
+    }
+    // prevent default
+    var b = 0;
+    if (mouseX > windowWidth / 2) {
+      b += 2;
+    }
+    if (mouseY > windowHeight / 2) {
+      b += 1;
+    }
+    lastButton = Array(0, 1, 3, 2)[b];
+    return false;
   }
 }
 
@@ -165,14 +166,14 @@ function ledring(x, y, colors) {
   fill('rgb(10,255,0)');
   textAlign(CENTER, CENTER);
   textSize(32);
-//  text('level ' + testLevel, 0, -20);
-  text(testID, 0, 0);
+  //  text('level ' + testLevel, 0, -20);
+  text(typeof testID !== 'undefined' ? testID : 'TEST', 0, 0);
   textSize(16);
   text('level ' + testLevel, 0, -40);
   text(frameCount, 0, 40);
   // end show test level
   rotate (radians(15));
-  for (i = 0; i < 12; i++) {
+  for (var i = 0; i < 12; i++) {
     fill(colors[i]);
     rotate (radians(-30));
     rectMode(CENTER);
@@ -191,8 +192,8 @@ function showLeds(leds) {
 
 function buttons(x, y, w, h) {
   push();
-  w2 = w / 2;
-  h2 = h / 2;
+  var w2 = w / 2;
+  var h2 = h / 2;
   translate(x, y);
   stroke(127, 127, 127);
   fill(10, 10, 10, 127);
@@ -217,7 +218,8 @@ function postResults(req, rec, status, time) {
     'event_label': testID,
     'value': currentLevel
   });
-  data = testID + '\t'
+   var testIDguard = typeof testID !== 'undefined' ? testID : 'UNKNOWN';
+   var data = testIDguard + '\t' 
     + testCounter + '\t'
     + id + '\t'
     + T0_IDLE + '\t'
@@ -250,6 +252,8 @@ var startFrame;
 var test;
 var game, reply;
 function changeState(newState) {
+  // Validate state is within valid range [0,7]
+  newState = Math.max(0, Math.min(7, Math.floor(newState)));
   startFrame = frameCount;
   lastLevel = currentLevel;
   currentLevel = testLevel;
@@ -263,7 +267,7 @@ function changeState(newState) {
 function handleIdle() {
   showIdle();
   if (lastButton != -1) {
-//    print("lastButton = " + lastButton);
+    //    print("lastButton = " + lastButton);
     testLevel = 2;
     changeState(1);
   }
@@ -288,7 +292,7 @@ function handleShowTest() {
     return;
   }
   if (frameCount % T2_SHOWTEST == 0) {
-    if(currentLevel > 0) {
+    if (currentLevel > 0) {
       showTestStep(game.getValue(testLevel - currentLevel));
     }
     currentLevel = currentLevel - 1;
@@ -319,7 +323,7 @@ function handleCheckResponse() {
     break;
   default:
     reply.push(lastButton);
-//    print('expected : ' + game.getValue(testLevel - currentLevel) + ', received : ' + lastButton);
+    //  print('expected : ' + game.getValue(testLevel - currentLevel) + ', received : ' + lastButton);
     if (lastButton != game.getValue(testLevel - currentLevel)) {
       postResults(game.toString(), '' + reply, 'wrong', frameCount - startFrame);
       lastButton = -1;
@@ -340,10 +344,12 @@ function handleCheckResponse() {
 // State 5
 function handleTimeOut() {
   showTimeout();
-  // TODO post the result as timeout
+  // Result already posted in handleCheckResponse() when timeout condition met
   if (frameCount - startFrame > T5_TIMEOUT) {
-    if(typeof custom_timeout === "function"){
-      changeState(custom_timeout());
+    if (typeof custom_timeout === "function") {
+      var nextState = custom_timeout();
+      // Ensure custom handler returns a valid state, otherwise reset to idle
+      changeState(typeof nextState === 'number' ? nextState : 0);
     } else {
       testLevel = 0;
       changeState(0);
@@ -355,10 +361,9 @@ function handleTimeOut() {
 // State 6
 function handleSuccess() {
   showSuccess();
-  // TODO post the result as success
+  // Result already posted in handleCheckResponse() with 'correct' status
   if (frameCount - startFrame > T6_CORRECT) {
     testLevel += 1;
-//    print("Success! new test level : " + testLevel);
     changeState(1);
   }
 }
@@ -366,10 +371,9 @@ function handleSuccess() {
 // State 7
 function handleFailure() {
   showFailure();
-  // TODO post the result as failure
+  // Result already posted in handleCheckResponse() with 'wrong' status
   if (frameCount - startFrame > T7_INCORRECT) {
     testLevel = max(testLevel - 1, 0) ;
-//    print("Failure! new test level : " + testLevel);
     if (testLevel == 0) {
       changeState(0);
     } else {

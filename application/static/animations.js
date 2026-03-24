@@ -1,9 +1,8 @@
 //
 // (c) Copyright 2021-2025 Maarten Meijer / Amsterdam University of Applied Science
 //
-// timings in frames not milliseconds! Running at 60 FPS so the timing in seconds
-// can be calculated as for example T1_WARN :
-//            120 frames / 60 frames per second = 2 seconds
+// Timing in frames (not milliseconds). Running at 60 FPS, so timing in seconds
+// can be calculated as: T / 60. For example, T1_WARN = 120 frames = 2 seconds.
 //
 //
 //  Change the id 'YOUR_GROUP' to the number/version of your group to be able to find
