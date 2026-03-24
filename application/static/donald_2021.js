@@ -90,14 +90,13 @@ function setup() {
 
   start = createButton('Starten');
   start.position(10, 330);
-  start.mousePressed(startLoop);
+  start.mouseClicked(startLoop);
   noLoop();
 }
 
 function startLoop() {
   questions = '' + age.value() + '\t' + awake.value() + '\t' + drugs.value() + '\t' + cb.value()+ '\t' + instructie.value()+ '\t' + eerder.value();
   removeElements();
-  testCounter = 0;
   frameRate(60);
   background(10);
   stroke(0);
@@ -133,7 +132,6 @@ function touchMoved() {
   if (isLooping()) {return false;}
 }
 
-
 function touchEnded() {
   if (isLooping()) {
 
@@ -143,7 +141,6 @@ function touchEnded() {
       fullscreen(!fullscreen());
       return;
     }
-    // prevent default
     var b = 0;
     if (mouseX > windowWidth / 2) {
       b += 2;
@@ -152,6 +149,10 @@ function touchEnded() {
       b += 1;
     }
     lastButton = Array(0, 1, 3, 2)[b];
+    // prevent default
+    return false;
+  } else {
+    lastButton = -1;
     return false;
   }
 }
@@ -253,7 +254,7 @@ var test;
 var game, reply;
 function changeState(newState) {
   // Validate state is within valid range [0,7]
-  newState = Math.max(0, Math.min(7, Math.floor(newState)));
+  // newState = Math.max(0, Math.min(7, Math.floor(newState)));
   startFrame = frameCount;
   lastLevel = currentLevel;
   currentLevel = testLevel;
@@ -267,7 +268,7 @@ function changeState(newState) {
 function handleIdle() {
   showIdle();
   if (lastButton != -1) {
-    //    print("lastButton = " + lastButton);
+//  print("lastButton = " + lastButton);
     testLevel = 2;
     changeState(1);
   }
@@ -387,7 +388,7 @@ function draw() {
   if (typeof custom_predraw === "function") {
     custom_predraw();
   }
-  //  print('current activityState : ' + activityState + ', test level : ' + testLevel + ', current level : ' + currentLevel);
+  print('current activityState : ' + activityState + ', test level : ' + testLevel + ', current level : ' + currentLevel);
   switch(activityState) {
   case 0:
     handleIdle();
