@@ -126,10 +126,12 @@ function distance(x1, y1, x2, y2) {
  */
 function touchStarted() {
   if (isLooping()) {return false;}
+  return true;
 }
 
 function touchMoved() {
   if (isLooping()) {return false;}
+  return true;
 }
 
 function touchEnded() {
@@ -153,7 +155,7 @@ function touchEnded() {
     return false;
   } else {
     lastButton = -1;
-    return false;
+    return true;
   }
 }
 
