@@ -22,29 +22,6 @@ If you just want to look at the interface part without server setup please see p
 ## state machine
 
 The memory tester is implemented using a [state machine](https://en.wikipedia.org/wiki/Finite-state_machine)
-<details>
-<summary>A state machine describing the interactions</summary>
-The source of the state machine diagram.
-
-```mermaid
-digraph g {
-  layout=circo
-  node [shape=circle width=1 style=filled fillcolor=grey]
-  0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 0
-  4 -> 6 -> 1
-  4 -> 7 -> 1
-
-  0 [label = "F0 Idle" ]
-  1 [label = "F1 Prepare"]
-  2 [label = "F2 ShowTest" fillcolor=lightblue]
-  3 [label = "F3 Decay"]
-  4 [label = "F4 Response"fillcolor=lightblue]
-  5 [label = "F5 Timeout" fillcolor=orange]
-  6 [label = "F6 Success" fillcolor=green]
-  7 [label = "F7 Failure" fillcolor=red]
-}
-```
-</details>
 
 ![](docs/test.png)
 
