@@ -22,6 +22,29 @@ If you just want to look at the interface part without server setup please see p
 ## state machine
 
 The memory tester is implemented using a [state machine](https://en.wikipedia.org/wiki/Finite-state_machine)
+<details>
+<summary>A state machine describing the interactions</summary>
+The source of the state machine diagram.
+
+```mermaid
+digraph g {
+  layout=circo
+  node [shape=circle width=1 style=filled fillcolor=grey]
+  0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 0
+  4 -> 6 -> 1
+  4 -> 7 -> 1
+
+  0 [label = "F0 Idle" ]
+  1 [label = "F1 Prepare"]
+  2 [label = "F2 ShowTest" fillcolor=lightblue]
+  3 [label = "F3 Decay"]
+  4 [label = "F4 Response"fillcolor=lightblue]
+  5 [label = "F5 Timeout" fillcolor=orange]
+  6 [label = "F6 Success" fillcolor=green]
+  7 [label = "F7 Failure" fillcolor=red]
+}
+```
+</details>
 
 ![](docs/test.png)
 
@@ -127,22 +150,34 @@ T-00ZI	18	PARAMS-0	10	60	20	60	240	0,3,2,1,3	0,3,2,1,1	wrong	163	1	412x766	2021-
 T-00ZI	19	PARAMS-0	10	60	20	60	240	3,2,3,2	3,2,3,3	wrong	120	1	412x766	2021-01-22 16:52:17.210425
 ```
 
-This sequence is composed of:
- - testID
- - testCounter
- - test PARAMS set, te version of the interaction tested
- - `T0_IDLE`, time before interaction starts
- - `T1_WARN`, time before sequence is shown
- - `T2_SHOWTEST`, total time for displaying the test sequence
- - `T3_DECAY`, time before you can enter the memorized sequence
- - `T4_COUNTDOWN`, time to enter the meorized sequence
- - requested sequence
- - recorded sequence
- - status _correct | wrong | timeout_
- - elapsed time in _frames_ at 60 fps
- - remaining levels at which error or timeout occurred, the current level is the length of the requested sequence
- - windowHeight x windowWidth in pixels (see whether it's a phone)
- - date+time stamp
+The column headings in these files are, description after comma:
+- testID, a unique identifier for the test session
+- testtCounter, the attempt number test for this testID
+- testPARAMS, the version of the interaction tested
+- `T0_IDLE`, time before interaction starts
+- `T1_WARN`, time before sequence is shown
+- `T2_SHOWTEST`, total time for displaying the test sequence
+- `T3_DECAY`, time before you can enter the memorized sequence
+- `T4_COUNTDOWN`, time to enter the meorized sequence
+- requested sequence
+- recorded sequence
+- status, correct | wrong | timeout
+- elapsed time, in frames at 60 fps
+- remaining levels, at which error or timeout occurred, the current level is the length of the requested sequence
+- windowHeight x windowWidth, size of the window in pixels (see whether it's a phone) separated by 'x'
+- dtstamp, date+time stamp in RFC 3339 format
+
+In the file `POST-data-2024` there are extra columns before dtstamp:
+- age, of the test subject in years
+- hours awake, number of hours the test subject has been awake
+- substance use, whether the test subject has used any substances that could affect performance categories
+
+In the file `POST-data-2025` there is one extra column before dtstamp:
+- colorblind, whether the test subject is colorblind
+
+In the file `POST-data-2026` there are two extra columns before dtstamp:
+- instructions, whether the test subject received instructions before the test
+- experience, whether the test subject has played Donald before
 
 ## Microsoft Excel (Dutch) tips
 
