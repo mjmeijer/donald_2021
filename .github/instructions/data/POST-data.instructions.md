@@ -11,7 +11,7 @@ The column headings in these files are, description after comma:
 - T1_WARN, time before sequence is shown
 - T2_SHOWTEST, total time for displaying the test sequence
 - T3_DECAY, time before you can enter the memorized sequence
--T4_COUNTDOWN, time to enter the meorized sequence
+- T4_COUNTDOWN, time to enter the meorized sequence
 - requested sequence
 - recorded sequence
 - status, correct | wrong | timeout
