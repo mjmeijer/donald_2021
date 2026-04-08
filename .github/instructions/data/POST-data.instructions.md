@@ -1,5 +1,5 @@
 ---
-applyTo: "data/POST-data*.txt"
+applyTo: "data/POST-data-20*.txt"
 ---
 For tabular data in .txt files, use jdatamunch-mcp tools to explore and analyze the data. Always start by calling describe_dataset to understand the schema and structure of the data. When retrieving data, use get_rows with appropriate filters instead of loading the entire file. For any group-by or summary questions, utilize the aggregate function for efficient analysis
 
@@ -32,5 +32,5 @@ In the file POST-data-2026 there are two extra columns before dtstamp:
 - instructions, whether the test subject received instructions before the test
 - experience, whether the test subject has played Donald before
 
-
+For collating the data into a single dataset, you can use the collate_post_data.py python script, which will handle the differences in columns across the files and produce a unified dataset for analysis. Make sure to specify the correct file paths when running the script.
 
