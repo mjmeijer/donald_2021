@@ -1,4 +1,5 @@
 lib
+research/
 __pycache__
 running_deployment.md
 POST-data*.txt
