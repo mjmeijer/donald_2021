@@ -13,6 +13,8 @@
 # limitations under the License.
 
 # [START gae_python38_app]
+import re
+
 from flask import Flask, Response, render_template, request, stream_with_context
 
 from google.cloud import datastore
@@ -118,6 +120,8 @@ def index():
         id = next_ID()
         testID = alnum4(id)
         set = request.args.get('set', default=str(id % 5), type=str)
+        if not re.fullmatch(r'\d+', set):
+            set = str(id % 5)
         return render_template('index.html', testID=testID, set=set)
 
 
@@ -144,12 +148,12 @@ def retrieve():
         testSet = request.args.get('set')
 
     if testID:
-        filename = 'testID-' + testID + '.txt'
+        safe_id = re.sub(r'[^A-Za-z0-9_]', '_', testID)
+        filename = 'testID-' + safe_id + '.txt'
     else:
         filename = "allResults.txt"
 
     def generate():
-        global filename
         query = client.query(kind="testRecord")
         if testID:
             query.add_filter(filter=PropertyFilter('testID', '=', testID))
