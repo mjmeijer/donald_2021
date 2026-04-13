@@ -120,7 +120,7 @@ def index():
         id = next_ID()
         testID = alnum4(id)
         set = request.args.get('set', default=str(id % 5), type=str)
-        if not re.fullmatch(r'\d+', set):
+        if not re.fullmatch(r'[-0-9a-zA-Z_]+', set):
             set = str(id % 5)
         return render_template('index.html', testID=testID, set=set)
 
