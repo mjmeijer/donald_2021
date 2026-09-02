@@ -32,27 +32,54 @@ var blackColors = new Array(
   'black' // named color
   );
 
-var testCounter, age, awake, drugs, start, questions;
+var testCounter, age, awake, drugs, start, questions, questionForm;
+
+// wraps a p5 DOM element with a <label for=id> so it reflows together responsively
+function createLabeledField(parentDiv, id, labelText, field) {
+  var row = createDiv('').parent(parentDiv);
+  row.style('display', 'flex');
+  row.style('flex-direction', 'column');
+  row.style('margin-bottom', '10px');
+
+  var label = createElement('label', labelText).parent(row);
+  label.attribute('for', id);
+  label.style('font-size', '14px');
+  label.style('margin-bottom', '4px');
+
+  field.parent(row);
+  field.id(id);
+  return field;
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  text("Leeftijd (jaren)", 10, 30)
-  age = createInput('', 'number');
-  age.position(10,35);
+
+  questionForm = createDiv('');
+  questionForm.id('question-form');
+  questionForm.style('position', 'absolute');
+  questionForm.style('top', '10px');
+  questionForm.style('left', '10px');
+  questionForm.style('display', 'flex');
+  questionForm.style('flex-direction', 'column');
+  questionForm.style('max-width', 'min(320px, 90vw)');
+
+  age = createLabeledField(questionForm, 'age-input', 'Leeftijd (jaren)', createInput('', 'number'));
   age.size(100);
   age.attribute("pattern" , "[0-9]*")
+  age.attribute("min", "4")
+  age.attribute("max", "99")
   age.style("text-align" , "right")
+  age.input(updateStartEnabled);
 
-  text("Uren wakker (uren)", 10, 80)
-  awake = createInput('', 'number');
-  awake.position(10,85);
+  awake = createLabeledField(questionForm, 'awake-input', 'Uren wakker (uren)', createInput('', 'number'));
   awake.size(100);
   awake.attribute("pattern" , "[0-9]*")
+  awake.attribute("min", "0")
+  awake.attribute("max", "36")
   awake.style("text-align" , "right")
+  awake.input(updateStartEnabled);
 
-  text("Middelen gebruik afgelopen 12 uur", 10, 130)
-  drugs = createSelect();
-  drugs.position(10,135);
+  drugs = createLabeledField(questionForm, 'drugs-select', 'Middelen gebruik afgelopen 12 uur', createSelect());
   drugs.option('zeg ik niet');
   drugs.option('geen');
   drugs.option('alcohol');
@@ -60,41 +87,60 @@ function setup() {
   drugs.option('alcohol+pillen');
   drugs.option('energiedrank');
   drugs.option('koffie');
+  drugs.option('tabak');
+  drugs.option('vape');
   drugs.option('van alles wat');
   drugs.option('anders');
   drugs.selected('zeg ik niet')
 
-  text("kleurenblind", 10, 180)
-  cb = createSelect();
-  cb.position(10,185);
+  cb = createLabeledField(questionForm, 'cb-select', 'kleurenblind', createSelect());
   cb.option('zeg ik niet');
   cb.option('kleurenblind');
   cb.option('niet kleurenblind');
   cb.selected('zeg ik niet')
 
-  text("instructie", 10, 230)
-  instructie = createSelect();
-  instructie.position(10,235);
+  instructie = createLabeledField(questionForm, 'instructie-select', 'instructie', createSelect());
   instructie.option('zeg ik niet');
   instructie.option('donald is mij uitgelegd');
   instructie.option('donald is mij niet uitgelegd');
   instructie.selected('zeg ik niet')
 
-  text("eerder gespeeld", 10, 280)
-  eerder = createSelect();
-  eerder.position(10,285);
+  eerder = createLabeledField(questionForm, 'eerder-select', 'eerder gespeeld', createSelect());
   eerder.option('zeg ik niet');
   eerder.option('ik heb donald eerder gespeeld');
   eerder.option('ik heb donald niet eerder gespeeld');
   eerder.selected('zeg ik niet')
 
   start = createButton('Starten');
-  start.position(10, 330);
+  start.parent(questionForm);
   start.mouseClicked(startLoop);
+  updateStartEnabled();
   noLoop();
 }
 
+// age must be between 4 and 99, awake hours between 0 and 36 (inclusive) before the test can be started
+function isAgeValid() {
+  var value = Number(age.value());
+  return age.value() !== '' && value >= 4 && value <= 99;
+}
+
+function isAwakeValid() {
+  var value = Number(awake.value());
+  return awake.value() !== '' && value >= 0 && value <= 36;
+}
+
+function updateStartEnabled() {
+  if (isAgeValid() && isAwakeValid()) {
+    start.removeAttribute('disabled');
+  } else {
+    start.attribute('disabled', '');
+  }
+}
+
 function startLoop() {
+  if (!isAgeValid() || !isAwakeValid()) {
+    return;
+  }
   questions = '' + age.value() + '\t' + awake.value() + '\t' + drugs.value() + '\t' + cb.value()+ '\t' + instructie.value()+ '\t' + eerder.value();
   removeElements();
   frameRate(60);
