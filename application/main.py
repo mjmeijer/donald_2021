@@ -15,11 +15,21 @@
 # [START gae_python38_app]
 import re
 
-from flask import Flask, Response, render_template, request, stream_with_context
+from flask import Flask, Response, app, render_template, request, stream_with_context
 
 from google.cloud import datastore
 from google.cloud.datastore.query import PropertyFilter
 from datetime import datetime
+from google.api_core import retry
+from google.api_core.exceptions import ServiceUnavailable
+
+datastore_retry = retry.Retry(
+    predicate=retry.if_exception_type(ServiceUnavailable),
+    initial=1.0,
+    maximum=10.0,
+    multiplier=2.0,
+    deadline=60.0,
+)
 
 #
 # a test code needs to be shown and transferred to the questionaire.
@@ -89,19 +99,27 @@ def count_results():
 
 
 def delete_old_testRecords():
-    return # all are deleted already
+    # return # all are deleted already
     kind = 'testRecord'
-    fetch_limit = 200
-    current_year = datetime(2025, 5, 21)
+    fetch_limit = 50
+    cutoff_date = datetime(2026, 8, 1)
 
     entities = True
     while entities:
         query = client.query(kind=kind)
-        query.add_filter(filter=PropertyFilter('timeStamp', '<=', current_year))
+        query.add_filter(filter=PropertyFilter('timeStamp', '<=', cutoff_date))
+        query.keys_only()
         entities = list(query.fetch(limit=fetch_limit))
-        for entity in entities:
-        #        print('Deleting: {}'.format(entity))
-            client.delete(entity.key)
+        if not entities:
+            break
+        try:
+            client.delete_multi(entities, datastore_retry, timeout=60)
+        except ServiceUnavailable:
+            app.logger.warning(
+                "Datastore unavailable while deleting old test records",
+                exc_info=True,
+            )
+        break
 
 
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
