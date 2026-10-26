@@ -7,9 +7,13 @@ on:
     paths:
       - '**.md'
 
+permissions: {}
+
 jobs:
   render-md-mermaid:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # required by git-auto-commit-action to push rendered images
 
     steps:
       - name: Checkout code
