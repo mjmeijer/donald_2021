@@ -7,7 +7,7 @@ requires-python = "==3.14.*"
 dependencies = [
     "blinker==1.9.0",
     "cachetools==5.5.2",
-    "certifi==2026.1.4",
+    "certifi==2026.10.19",
     "charset-normalizer==3.4.4",
     "click==8.3.1",
     "flask>=3.1.3",
