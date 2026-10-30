@@ -3,8 +3,11 @@ runtime: python314
 includes:
   - env_secrets.yaml
 
+entrypoint: gunicorn -b :$PORT -w 1 --threads 8 main:app
+
 automatic_scaling:
   max_instances: 10
+  min_instances: 1
 
 env_variables:
   BUCKET_NAME: "donald-2021.appspot.com"
