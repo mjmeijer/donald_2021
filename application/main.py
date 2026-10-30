@@ -13,6 +13,8 @@
 # limitations under the License.
 
 # [START gae_python38_app]
+import hmac
+import os
 import random
 import re
 import time
@@ -165,6 +167,18 @@ def query():
     return render_template('query.html', count=count)
 
 
+def check_auth():
+    # Fails closed when credentials are not configured.
+    auth = request.authorization
+    user = os.environ.get('QUERY_USER', '')
+    password = os.environ.get('QUERY_PASSWORD', '')
+    return bool(
+        auth and user and password
+        and hmac.compare_digest((auth.username or '').encode(), user.encode())
+        and hmac.compare_digest((auth.password or '').encode(), password.encode())
+    )
+
+
 filename = 'testID-'
 
 
@@ -178,6 +192,10 @@ def retrieve():
     else:
         testID = request.args.get('ID')
         testSet = request.args.get('set')
+
+    if not testID and not check_auth():
+        return Response('Login required', 401,
+                        {'WWW-Authenticate': 'Basic realm="Donald results"'})
 
     if testID:
         safe_id = re.sub(r'[^A-Za-z0-9_]', '_', testID)

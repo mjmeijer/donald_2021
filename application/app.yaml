@@ -1,5 +1,8 @@
 runtime: python314
 
+includes:
+  - env_secrets.yaml
+
 automatic_scaling:
   max_instances: 10
 
