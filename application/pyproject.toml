@@ -18,6 +18,7 @@ dependencies = [
     "googleapis-common-protos==1.69.2",
     "grpcio==1.78.0",
     "grpcio-status==1.71.2",
+    "gunicorn>=26.2.0",
     "idna==3.15",
     "itsdangerous==2.2.0",
     "Jinja2==3.1.6",
