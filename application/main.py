@@ -13,7 +13,9 @@
 # limitations under the License.
 
 # [START gae_python38_app]
+import random
 import re
+import time
 
 from flask import Flask, Response, app, render_template, request, stream_with_context
 
@@ -21,7 +23,7 @@ from google.cloud import datastore
 from google.cloud.datastore.query import PropertyFilter
 from datetime import datetime
 from google.api_core import retry
-from google.api_core.exceptions import ServiceUnavailable
+from google.api_core.exceptions import Aborted, Conflict, ServiceUnavailable
 
 datastore_retry = retry.Retry(
     predicate=retry.if_exception_type(ServiceUnavailable),
@@ -55,15 +57,27 @@ client = datastore.Client()
 key = client.key('counter', 'test-ID')
 
 
-def next_ID():
-    with client.transaction():
-        counter = client.get(key)
-        if not counter:
-            counter = datastore.Entity(key)
-            counter.update({'value': 100})
-        counter['value'] = counter['value'] + 1
-        client.put(counter)
-    return counter['value']
+def next_ID(max_attempts=8, base_delay=0.05):
+    # Retry on contention with exponential backoff and full jitter.
+    for attempt in range(max_attempts):
+        try:
+            with client.transaction():
+                counter = client.get(key)
+                if not counter:
+                    counter = datastore.Entity(key)
+                    counter.update({'value': 100})
+                counter['value'] = counter['value'] + 1
+                client.put(counter)
+            return counter['value']
+        except (Aborted, Conflict):
+            if attempt == max_attempts - 1:
+                raise
+            time.sleep(random.uniform(0, base_delay * 2 ** attempt))
+
+
+def next_ID_allocated():
+    # Contention-free alternative: Datastore-allocated unique IDs (not sequential).
+    return client.allocate_ids(client.key('testID'), 1)[0].id
 #
 # received data needs to be stored for reference
 #
