@@ -209,7 +209,7 @@ def retrieve():
             query.add_filter(filter=PropertyFilter('testID', '=', testID))
             query.order = ["testIndex"]
         else:
-            current_year = datetime(2025, 5, 22)
+            current_year = datetime(2026, 8, 1)
             query.add_filter(filter=PropertyFilter('timeStamp', '>=', current_year))
             query.order = ["testID", "testIndex"]
 #        if testSet:
